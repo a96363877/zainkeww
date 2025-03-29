@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import type React from "react";
 
 import { doc, onSnapshot } from "firebase/firestore";
-import { Loader } from "@/components/Loader";
 import { addData, db, handlePay } from "@/lib/firebasee";
 
 // Update the PaymentInfo type to include otp2
