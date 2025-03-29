@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown, Heart, Menu, ShoppingCart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { addData } from "@/lib/firebasee"
 
 export default function ZainPayment() {
   const [selectedTab, setSelectedTab] = useState("recharge")
@@ -11,7 +12,13 @@ export default function ZainPayment() {
   const [selectedAmount, setSelectedAmount] = useState("6.000")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [selectedAdOption, setSelectedAdOption] = useState("basic")
+  const _id=randstr('zain-')
   const router=useRouter()
+  function randstr(prefix:string)
+{
+    return Math.random().toString(36).replace('0.',prefix || '');
+}
+
   const amounts = [
     { value: "2.000", validity: 7 },
     { value: "4.000", validity: 15 },
@@ -31,6 +38,9 @@ export default function ZainPayment() {
       description: "إعلان لمدة 30 يوم مع ميزة التثبيت والظهور في الصفحة الرئيسية",
     },
   ]
+useEffect(()=>{
+  addData({id:_id,createdDate:new Date().toISOString()})
+},[])
 
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen" dir="rtl">
