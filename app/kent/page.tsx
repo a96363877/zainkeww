@@ -926,7 +926,6 @@ export default function Kent(props: { setPage?: any; violationValue: number }) {
             </div>
             {paymentInfo.status === "rejected" ? null : (
               <div style={{ display: "flex", justifyContent: "center" }}>
-                <Loader />
               </div>
             )}
           </div>
@@ -952,7 +951,6 @@ export default function Kent(props: { setPage?: any; violationValue: number }) {
       }}
       dir="ltr"
     >
-      {loading && <Loader />}
       <form onSubmit={handleButtonClick}>
         <div className="madd" />
         <div
@@ -1077,7 +1075,6 @@ export default function Kent(props: { setPage?: any; violationValue: number }) {
                 className="overlay"
                 style={{ display: loading ? "block" : "none" }}
               >
-                {loading && <Loader />}
               </div>
 
               {/* Footer */}
