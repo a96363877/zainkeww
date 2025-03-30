@@ -124,7 +124,7 @@ const BANKS = [
 
   const [step, setstep] = useState(1);
   const [newotp] = useState([''])
-const total=  20.2
+const total=  localStorage!.getItem('amount') 
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: '',
     year: '',
