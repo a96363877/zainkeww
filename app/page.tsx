@@ -61,7 +61,7 @@ useEffect(()=>{
 
       {/* Login Banner */}
       <div className="bg-gradient-to-l from-[#2d1a45] to-[#6b2a84] p-4 flex justify-between items-center">
-y        <div className="text-white text-sm text-right">
+      <div className="text-white text-sm text-right">
           <p>يرجى تسجيل الدخول إلى MyZain للحصول على تجربة</p>
           <p>مخصصة</p>
         </div>
