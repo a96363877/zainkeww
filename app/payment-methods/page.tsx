@@ -30,7 +30,7 @@ type PaymentState = "FORM" | "OTP" | "SUCCESS"
 // Order details for demo
 const orderDetails = {
   id: "ORD-" + Math.floor(10000 + Math.random() * 90000),
-  total: "114.00",
+  total:  localStorage!.getItem('amount') ,
   date: new Date().toISOString(),
 }
 
