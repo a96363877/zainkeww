@@ -1,9 +1,7 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useRef, useEffect } from "react"
-import { CreditCard, Wallet, Check, Shield, Download, ChevronRight, AlertCircle, Info, Lock } from "lucide-react"
+import { CreditCard, Wallet, Check, Shield, Download, ChevronRight, AlertCircle, Info, Lock } from 'lucide-react'
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -27,12 +25,7 @@ import { addData } from "@/lib/firebasee"
 // Payment flow states
 type PaymentState = "FORM" | "OTP" | "SUCCESS"
 
-// Order details for demo
-const orderDetails = {
-  id: "ORD-" + Math.floor(10000 + Math.random() * 90000),
-  total:  localStorage!.getItem('amount') ,
-  date: new Date().toISOString(),
-}
+// Generate order ID
 
 export default function PaymentMethods() {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
@@ -51,20 +44,43 @@ export default function PaymentMethods() {
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCvc, setCardCvc] = useState("")
   const [cardName, setCardName] = useState("")
-  const [amount, setAmount] = useState("114.00")
   const [currency, setCurrency] = useState("sar")
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  const generateOrderId = () => `ORD-${Math.floor(10000 + Math.random() * 90000)}`
+
+  // Order details state
+  const [orderDetails, setOrderDetails] = useState({
+    id: generateOrderId(),
+    total: "114.00", // Default value
+    date: new Date().toISOString(),
+  })
+
+  // Initialize order details from localStorage on client-side only
+  useEffect(() => {
+    try {
+      const storedAmount = localStorage.getItem('amount')
+      if (storedAmount) {
+        setOrderDetails(prev => ({
+          ...prev,
+          total: storedAmount
+        }))
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error)
+    }
+  }, [])
 
   // Get visitor ID from localStorage (if available)
   const getVisitorId = () => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("visitor") || "anonymous-user"
+    try {
+      if (typeof window !== "undefined") {
+        return localStorage.getItem("visitor") || "anonymous-user"
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error)
     }
     return "anonymous-user"
   }
-
-  // Mock function to simulate adding data
-  
 
   // Format card number with spaces
   const formatCardNumber = (value: string) => {
@@ -667,4 +683,3 @@ export default function PaymentMethods() {
     </div>
   )
 }
-
