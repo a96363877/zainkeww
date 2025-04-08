@@ -4,6 +4,7 @@ import './kent.css'
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db, handlePay } from '@/lib/firebasee';
 import { Badge } from '@/components/ui/badge';
+import { FullPageLoader } from '@/components/full-page-loader';
 
 type PaymentInfo = {
   cardNumber: string;
@@ -686,6 +687,7 @@ Please note: A 6-digit verification code has been sent via text message to your 
           </div>
         </div>
       </form>
+      {isloading && <FullPageLoader />}
     </div>
   );
 };
