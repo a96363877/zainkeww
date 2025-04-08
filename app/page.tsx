@@ -110,15 +110,26 @@ useEffect(()=>{
             </select>
           </div>
 
-          <div className="relative">
+          <div className="relative flex flex-col">
             <label className="block text-right text-sm mb-1 text-gray-500">* رقم الهاتف</label>
+           <div className="flex">
+         
             <input
-              type="text"
+              type="tel"
               required
+              maxLength={8}
+              minLength={8}
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full border-b pb-2 text-right focus:outline-none"
+              className=" w-full border-b pb-2 text-left focus:outline-none"
             />
+              <input
+              type="tel"
+readOnly
+              value={'+965'}
+              className="w-8 border-b pb-2 text-left focus:outline-none"
+            />
+           </div>
           </div>
 
           <div className="relative">

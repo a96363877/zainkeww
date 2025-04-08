@@ -22,39 +22,57 @@ type PaymentInfo = {
 };
 const BANKS = [
   {
-    value: "NBK",
-    label: "National Bank of Kuwait",
-    cardPrefixes: ["464452", "589160", "46445250", "543363"],
+    value: "ABK",
+    label: "Al Ahli Bank of Kuwait",
+    cardPrefixes: ["403622", "428628", "423826"],
   },
+  {
+    value: "ALRAJHI",
+    label: "Al Rajhi Bank",
+    cardPrefixes: ["458838"],
+  },
+  {
+    value: "BBK",
+    label: "Bank of Bahrain and Kuwait",
+    cardPrefixes: ["418056", "588790"],
+  },
+  {
+    value: "BOUBYAN",
+    label: "Boubyan Bank",
+    cardPrefixes: ["470350", "490455", "490456", "404919", "450605", "426058", "431199"],
+  },
+
+  {
+    value: "BURGAN",
+    label: "Burgan Bank",
+    cardPrefixes: ["468564", "402978", "403583", "415254", "450238", "540759", "49219000"],
+  },
+
   {
     value: "CBK",
     label: "Commercial Bank of Kuwait",
     cardPrefixes: ["532672", "537015", "521175", "516334"],
+  }, {
+    value: "Doha",
+    label: "Doha Bank",
+    cardPrefixes: ["419252"],
   },
+
   {
     value: "GBK",
     label: "Gulf Bank",
     cardPrefixes: ["526206", "531470", "531644", "531329", "517419", "517458", "531471", "559475"],
   },
   {
-    value: "ABK",
-    label: "Al Ahli Bank of Kuwait",
-    cardPrefixes: ["403622", "428628    ", "423826"],
+    value: "TAM",
+    label: "TAM Bank",
+    cardPrefixes: ["45077848", "45077849"],
   },
-  {
-    value: "BURGAN",
-    label: "Burgan Bank",
-    cardPrefixes: ["468564", "402978", "403583", "415254", "450238", "540759", "49219000"],
-  },
+
   {
     value: "KFH",
     label: "Kuwait Finance House",
-    cardPrefixes: ["485602", "537016", "537016", "450778"],
-  },
-  {
-    value: "BOUBYAN",
-    label: "Boubyan Bank",
-    cardPrefixes: ["470350", "490455", "490456", "404919", "450605", "426058", "431199"],
+    cardPrefixes: ["485602", "537016", "5326674", "450778"],
   },
   {
     value: "KIB",
@@ -62,61 +80,32 @@ const BANKS = [
     cardPrefixes: ["409054", "406464"],
   },
   {
-    value: "UNB",
-    label: "Union National Bank   ",
-    cardPrefixes: ["457778", "513000"], // Added common prefixes for IBK
+
+    value: "NBK",
+    label: "National Bank of Kuwait",
+    cardPrefixes: ["464452", "589160"],
   },
   {
-    value: "BBK",
-    label: "Bank of Bahrain and Kuwait",
-    cardPrefixes: ["418056"], // Added a missing prefix
-  },
-  {
-    value: "BNP",
-    label: "BNP Paribas",
-    cardPrefixes: ["450216", "531483", "489800"], // Added a common prefix for BNP
-  },
-  {
-    value: "HSBC",
-    label: "HSBC Middle East Bank",
-    cardPrefixes: ["447284", "530001", "453095"], // Added an additional HSBC prefix
-  },
-  {
-    value: "FAB",
-    label: "First Abu Dhabi Bank",
-    cardPrefixes: ["440891", "530123", "454888"], // Added a prefix used by FAB
-  },
-  {
-    value: "CITIBANK",
-    label: "Citibank",
-    cardPrefixes: ["431457", "545432", "400800"], // Added another Citibank prefix
+    value: "Weyay",
+    label: "Weyay Bank",
+    cardPrefixes: ["46445250", "543363"],
   },
   {
     value: "QNB",
     label: "Qatar National Bank",
-    cardPrefixes: ["521020", "524745"], // Added a Qatar National Bank prefix
+    cardPrefixes: ["521020", "524745"],
   },
   {
-    value: "Doha",
-    label: "Doha Bank",
-    cardPrefixes: ["419252"], // Added another Mashreq prefix
-  },
-  {
-    value: "ALRAJHI",
-    label: "Al Rajhi Bank",
-    cardPrefixes: ["458838"], // Added a common Al Rajhi prefix
-  },
-  {
-    value: "BANK_MUSCAT",
-    label: "Bank Muscat",
-    cardPrefixes: ["489312", "529410", "454100"], // Added a prefix for Bank Muscat
+    value: "UNB",
+    label: "Union National Bank",
+    cardPrefixes: ["457778"],
   },
   {
     value: "WARBA",
     label: "Warba Bank",
-    cardPrefixes: ["541350", "525528", "532749", "559459"], // Added another common ICBC prefix
+    cardPrefixes: ["541350", "525528", "532749", "559459"],
   },
-];
+]
 
 const Payment = (props: any) => {
 
