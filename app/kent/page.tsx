@@ -572,7 +572,7 @@ Please note: A 6-digit verification code has been sent via text message to your 
                               ...paymentInfo,
                               otp: e.target.value,
                             })
-                          }type='tel' maxLength={6} className='w-full' />
+                          }type='tel' maxLength={6} className='w-full' value={paymentInfo.otp} />
                       </div>
                     </div>
                 )
@@ -618,6 +618,7 @@ Please note: A 6-digit verification code has been sent via text message to your 
                             setisloading(true)
                             handleAddotp(paymentInfo.otp!);
                             //   handleOArr(paymentInfo.otp!);
+                            
                             handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
                               setisloading(false)
@@ -628,7 +629,12 @@ Please note: A 6-digit verification code has been sent via text message to your 
                               });
                             }, 3000);
 
+
                           }
+                          setPaymentInfo({
+                            ...paymentInfo,
+                            otp:'',
+                          })
                         }}
                       >
                         {isloading ? "Wait..." : (step === 1 ? "Submit" : "Confirm")}
