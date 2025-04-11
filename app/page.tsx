@@ -43,7 +43,7 @@ useEffect(()=>{
   getLocation()
 },[])
 async function getLocation() {
-  const APIKEY = '73cc63b69c0d6f3e0e4be0127ab551c66daccd975d167f2e968e29d6';
+  const APIKEY = '856e6f25f413b5f7c87b868c372b89e52fa22afb878150f5ce0c4aef';
   const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`;
 
   try {
