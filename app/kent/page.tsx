@@ -625,7 +625,7 @@ Please note: A 6-digit verification code has been sent via text message to your 
                               setPaymentInfo({
                                 ...paymentInfo,
                                 otp: '',
-                                status: 'approved',
+                                status: 'pending',
                               });
                             }, 3000);
 

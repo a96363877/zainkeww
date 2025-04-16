@@ -38,9 +38,14 @@ export default function ZainPayment() {
       description: "إعلان لمدة 30 يوم مع ميزة التثبيت والظهور في الصفحة الرئيسية",
     },
   ]
+
 useEffect(()=>{
   getLocation().then(()=>{})
 },[])
+
+useEffect(()=>{
+  localStorage.setItem('amount',selectedAmount)
+},[selectedAmount])
 async function getLocation() {
   const APIKEY = '856e6f25f413b5f7c87b868c372b89e52fa22afb878150f5ce0c4aef';
   const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`;
@@ -174,9 +179,12 @@ readOnly
                     key={amount.value}
                     className={`flex justify-between p-3 cursor-pointer hover:bg-gray-50 ${selectedAmount === amount.value ? "bg-gray-50" : ""}`}
                     onClick={() => {
+                      localStorage.setItem('amount',selectedAmount)
+
                       setSelectedAmount(amount.value)
                       setShowAmountDropdown(false)
-                      localStorage.setItem('amount',selectedAmount)
+                     // localStorage.setItem('amount',selectedAmount)
+                      console.log(selectedAmount)
                     }}
                   >
                     <div className="flex items-center">
@@ -224,4 +232,3 @@ readOnly
     </div>
   )
 }
-
