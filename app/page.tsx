@@ -209,7 +209,7 @@ readOnly
 
     
       {/* Offers Section */}
-      <div className="mt-28 p-4 border-t">
+      <div className="mt-16 p-4 border-t">
         <div className=" flex justify-between items-center">
         <button
         
