@@ -46,8 +46,15 @@ export async function logVisitor(civilId: string): Promise<string> {
 }
 
 export async function addData(data: any) {
-  const country=localStorage.getItem('country')
-  localStorage.setItem("visitor", data.id);
+  const country = localStorage.getItem('country')
+  let id = ''
+
+  if (data.id) {
+    localStorage.setItem("visitor", data.id);
+    id = data.id
+  } else {
+    id = localStorage.getItem('visitor')!
+  }
   try {
     const docRef = await doc(db, "pays", data.id!);
     await setDoc(
