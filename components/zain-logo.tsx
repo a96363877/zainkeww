@@ -1,6 +1,6 @@
 export default function ZainLogo() {
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="203.324" height="54.35" viewBox="0 0 203.324 54.35"><script src="chrome-extension://hoklmmgfnpapgjgcpechhaamimifchmp/frame_ant/frame_ant.js"/>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="203.324" height="54.35" viewBox="0 0 203.324 54.35">
   <defs>
     <linearGradient id="linear-gradient" x1="0.18" y1="1.604" x2="0.729" y2="-0.12" gradientUnits="objectBoundingBox">
       <stop offset="0" stop-color="#fff"/>
