@@ -22,13 +22,13 @@ export default function RootLayout({
       <body>
         
           {children}
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=AW-16931664129`} strategy="afterInteractive" />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=AW-16594688467`} strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'AW-16931664129');
+            gtag('config', 'AW-16594688467');
           `}
         </Script>
       </body>
