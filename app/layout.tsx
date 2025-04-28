@@ -7,6 +7,7 @@ import Script from "next/script"
 export const metadata: Metadata = {
   title: "Zain App",
   description: "Zain APP ",
+  keywords:"باقات زي,  شحن رصيد زين,  عروض زين,  عروض زين للانترنت,  عروض زين الكويت,  zain kw,  رصيد زين,  باقات زين للانترنت,  عروض زين نت, تعبئة رصيد زين,  باقات زين مسبقة الدفع,  شريحة زين,  شركة زين الكويت,  zain net package,  باقات الإنترنت زين,  عروض زين مسبقة الدفع,  شحن زين,  نت زين,  شركة زين,  عروض نت زين,  طلب شريحة زين,  عروض زين الشهرية,  باقات زين للانترنت اللامحدود, عروض انترنت,  انترنت زين"
 }
 
 export default function RootLayout({
@@ -22,13 +23,13 @@ export default function RootLayout({
       <body>
         
           {children}
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=AW-17036437498`} strategy="afterInteractive" />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=AW-17035708935`} strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'AW-17036437498');
+            gtag('config', 'AW-17035708935');
           `}
         </Script>
       </body>
