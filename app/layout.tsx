@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import Script from "next/script"
-import Analytics from "./analytics"
 
 
 export const metadata: Metadata = {
@@ -33,7 +32,6 @@ export default function RootLayout({
             gtag('config', 'AW-322857929');
           `}
         </Script>
-        <Analytics/>
       </body>
     </html>
   )
