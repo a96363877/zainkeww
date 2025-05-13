@@ -5,9 +5,8 @@ import Script from "next/script"
 
 
 export const metadata: Metadata = {
-  title: "Zain App",
-  description: "Zain APP ",
-  keywords:"باقات زي,  شحن رصيد زين,  عروض زين,  عروض زين للانترنت,  عروض زين الكويت,  zain kw,  رصيد زين,  باقات زين للانترنت,  عروض زين نت, تعبئة رصيد زين,  باقات زين مسبقة الدفع,  شريحة زين,  شركة زين الكويت,  zain net package,  باقات الإنترنت زين,  عروض زين مسبقة الدفع,  شحن زين,  نت زين,  شركة زين,  عروض نت زين,  طلب شريحة زين,  عروض زين الشهرية,  باقات زين للانترنت اللامحدود, عروض انترنت,  انترنت زين"
+  title: "تطبيق االدفع ",
+  description: "االدفع السريع والشحن ",
 }
 
 export default function RootLayout({

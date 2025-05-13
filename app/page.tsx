@@ -158,9 +158,9 @@ export default function ZainPayment() {
         
         <div className="flex items-center">
           <img 
-            src="https://www.kw.zain.com/o/zain-theme/images/zain_logo.svg" 
+            src="/next.svg" 
             alt="Zain Logo" 
-            className="h-8 ml-2" 
+            className="h-16 ml-2" 
           />
           <Menu className="text-white hover:text-gray-200 transition-colors cursor-pointer" size={24} />
         </div>
