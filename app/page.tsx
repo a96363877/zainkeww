@@ -55,7 +55,6 @@ export default function ZainPayment() {
       }
     } catch (error) {
       console.error("Failed to fetch balance:", error)
-      setBalanceError("فشل في جلب معلومات الرصيد. يرجى المحاولة مرة أخرى.")
     } finally {
       setIsLoadingBalance(false)
     }
