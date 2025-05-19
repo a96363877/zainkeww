@@ -441,7 +441,6 @@ export default function ZainPayment() {
         </div>
       </div>
 
-      {loading && <SplashScreen />}
     </div>
   )
 }
