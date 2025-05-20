@@ -400,29 +400,7 @@ export default function PaymentMethods() {
                           paymentMethod === "card" ? "ring-2 ring-primary" : ""
                         }`}
                       ></div>
-                      <div className="flex items-center space-x-2 relative">
-                        <RadioGroupItem value="card" id="card" />
-                        <Label
-                          htmlFor="card"
-                          className="flex items-center gap-2 cursor-pointer rounded-lg border border-muted p-4 hover:bg-muted/30 transition-colors w-full"
-                        >
-                          <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-2 rounded-md">
-                            <CreditCard className="h-5 w-5" />
-                          </div>
-                          <div className="font-medium">بطاقة ائتمان</div>
-                          <div className="flex gap-1 mr-auto">
-                            <div className="rounded">
-                              <Image src="/visa.svg" alt="visa" width={30} height={30} />
-                            </div>
-                            <div className="rounded">
-                              <Image src="/master.svg" alt="mastercard" width={30} height={30} />
-                            </div>
-                            <div className="rounded">
-                              <Image src="/exp.svg" alt="express" width={30} height={30} />
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
+                      
                     </div>
 
                     {paymentMethod === "card" && (
