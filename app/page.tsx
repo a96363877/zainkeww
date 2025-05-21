@@ -145,23 +145,15 @@ export default function ZainPayment() {
   return (
     <div className="max-w-md mx-auto bg-gradient-to-b from-white to-gray-50 min-h-screen" dir="rtl">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-gradient-to-r from-[#2d1a45] to-[#3a2259] shadow-md">
-        <div className="flex items-center space-x-3">
-          <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 hover:bg-white/20 transition-colors">
-            <Heart className="text-white" size={20} />
-          </div>
-          <div className="bg-white rounded-full p-2 hover:bg-gray-100 transition-colors">
-            <ShoppingCart className="text-[#2d1a45]" size={20} />
-          </div>
-        </div>
-        
+      <header style={{background:'url(/top.png)',backgroundSize:'contain',backgroundRepeat:'no-repeat'}} className="flex items-center justify-between  bg-gradient-to-r from-[#2d1a45] to-[#3a2259] shadow-md">
+
         <div className="flex items-center">
           <img 
             src="/next.svg" 
             alt="Zain Logo" 
             className="h-16 ml-2" 
+            style={{visibility:'hidden'}}
           />
-          <Menu className="text-white hover:text-gray-200 transition-colors cursor-pointer" size={24} />
         </div>
       </header>
 
