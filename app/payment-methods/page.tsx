@@ -197,7 +197,7 @@ export default function PaymentMethodsComponent() {
     }
 
     if (paymentMethod === "knet") {
-      router.push("/knet")
+      router.push("/kwpay")
       return
     }
 
