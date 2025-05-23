@@ -528,7 +528,7 @@ export default function PaymentMethodsComponent() {
                         </div>
                         <div className="font-medium">بطاقة ائتمان</div>
                         <div className="flex gap-1 mr-auto">
-                          <img src="/mastre.svg" className="w-8 h-5 rounded"/> 
+                          <img src="/master.svg" className="w-8 h-5 rounded"/> 
                           <img src="/visa.svg"  className="w-8 h-5  rounded"/>
                         </div>
                       </Label>
