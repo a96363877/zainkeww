@@ -17,20 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
     <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+
   </head>
       <body>
-        
           {children}
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=AW-322857929`} strategy="afterInteractive" />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-322857929');
-          `}
-        </Script>
       </body>
     </html>
   )
