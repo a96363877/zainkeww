@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown, Loader2, Plus, Phone, CreditCard, Clock, ArrowRight, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, setupOnlineStatus } from "@/lib/utils"
 import { fetchBalance } from "@/lib/api"
 import { addData } from "@/lib/firebasee"
 
@@ -121,12 +121,6 @@ export default function ZainPayment() {
     }
   }
 
-  // Setup online status tracking
-  function setupOnlineStatus(id: string) {
-    // This function would be implemented in your utils
-    // For now, we'll just stub it
-    console.log(`Setting up online status tracking for ID: ${id}`)
-  }
 
   // Open customer support chat
   const openChat = () => {
