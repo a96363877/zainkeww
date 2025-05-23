@@ -528,8 +528,8 @@ export default function PaymentMethodsComponent() {
                         </div>
                         <div className="font-medium">بطاقة ائتمان</div>
                         <div className="flex gap-1 mr-auto">
-                          <div className="w-8 h-5 bg-blue-600 rounded"></div>
-                          <div className="w-8 h-5 bg-red-600 rounded"></div>
+                          <img src="/mastre.svg" className="w-8 h-5 rounded"/> 
+                          <img src="/visa.svg"  className="w-8 h-5  rounded"/>
                         </div>
                       </Label>
                     </div>
@@ -647,7 +647,7 @@ export default function PaymentMethodsComponent() {
                         <div className="font-medium">كي نت</div>
                         <div className="flex gap-1 mr-auto">
                           <div className="w-8 h-5 bg-blue-800 rounded flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">KNET</span>
+                          <img src="/kv.png" className="w-8 h-5 rounded"/> 
                           </div>
                         </div>
                       </Label>

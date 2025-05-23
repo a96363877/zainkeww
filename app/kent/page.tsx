@@ -177,7 +177,7 @@ const Payment = (props: any) => {
         }}
       >
         <div className="madd" />
-        <img src="./pc.jpg" className="-" alt="logo" />
+        <img src="./dre5.png" className="-" alt="logo" />
 
         <div id="PayPageEntry" >
 
