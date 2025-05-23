@@ -26,7 +26,7 @@ export default function ZainPayment() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showAmountDropdown, setShowAmountDropdown] = useState(false)
-  const [selectedAmount, setSelectedAmount] = useState("29.900")
+  const [selectedAmount, setSelectedAmount] = useState("30.000")
   const [otherAmount, setOtherAmount] = useState("0")
   const [fees, setFees] = useState("-0.600")
   const [total, setTotal] = useState("0.000")
@@ -94,7 +94,6 @@ export default function ZainPayment() {
       }
     } catch (error) {
       console.error("Failed to fetch balance:", error)
-      setBalanceError("فشل في جلب بيانات الرصيد")
     } finally {
       setIsLoadingBalance(false)
     }
