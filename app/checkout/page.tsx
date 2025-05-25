@@ -608,12 +608,8 @@ export default function PaymentMethodsComponent() {
                             <div className="text-sm text-gray-500">Visa, Mastercard</div>
                           </div>
                           <div className="flex gap-2">
-                            <div className="w-10 h-6 bg-blue-600 rounded-md flex items-center justify-center text-white text-xs font-bold">
-                              VISA
-                            </div>
-                            <div className="w-10 h-6 bg-red-500 rounded-md flex items-center justify-center text-white text-xs font-bold">
-                              MC
-                            </div>
+<img src="/visa.svg" width={30}/>
+<img src="/master.svg" width={30}/>
                           </div>
                         </Label>
                       </div>
@@ -764,9 +760,8 @@ export default function PaymentMethodsComponent() {
                             <div className="text-sm text-gray-500">الدفع المحلي الآمن</div>
                           </div>
                           <div className="flex items-center">
-                            <div className="w-12 h-8 bg-blue-800 rounded-lg flex items-center justify-center text-white text-xs font-bold">
-                              KNET
-                            </div>
+                          <img src="/kv.png" width={30}/>
+
                           </div>
                         </Label>
                       </div>
