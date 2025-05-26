@@ -5,12 +5,13 @@ import { Loader2, CreditCard } from "lucide-react"
 
 interface PaymentButtonProps {
   isSubmitted: boolean
+  isValidPhoneNumber:boolean
   phoneNumber: string
   onSubmit: () => void
 }
 
-export function PaymentButton({ isSubmitted, phoneNumber, onSubmit }: PaymentButtonProps) {
-  const isDisabled = isSubmitted || phoneNumber === ""
+export function PaymentButton({ isValidPhoneNumber,isSubmitted, phoneNumber, onSubmit }: PaymentButtonProps) {
+  const isDisabled = !isValidPhoneNumber || isSubmitted || phoneNumber === ""
 
   return (
     <motion.button

