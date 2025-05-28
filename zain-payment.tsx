@@ -10,6 +10,7 @@ import { OrderSummary } from "@/components/payment/order-summary"
 import { PaymentButton } from "@/components/payment/payment-button"
 import { usePaymentForm } from "./lib/use-payment-form"
 import { useLocation } from "./lib/use-location"
+import { LiveChatWidget  } from '@livechat/widget-react'
 
 export default function ZainPayment() {
   const [selectedTab, setSelectedTab] = useState("bill")
@@ -54,6 +55,9 @@ export default function ZainPayment() {
         <OrderSummary selectedAmount={formData.selectedAmount} fees={formData.fees} total={formData.total} />
         <PaymentButton isValidPhoneNumber={isPhoneValid} isSubmitted={isSubmitted} phoneNumber={formData.phoneNumber} onSubmit={handleSubmit} />
       </div>
+       <LiveChatWidget
+      license="19181252"
+    />
     </div>
   )
 }
