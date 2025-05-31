@@ -10,7 +10,7 @@ export interface AmountOption {
 
 export interface PaymentFormData {
   phoneNumber: string
-  selectedAmount: string
+  selectedAmount: number |string,
   numberType: string
   fees: string
   total: string

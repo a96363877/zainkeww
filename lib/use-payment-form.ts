@@ -9,7 +9,7 @@ import { addData } from "@/lib/firebasee"
 export function usePaymentForm() {
   const [formData, setFormData] = useState<PaymentFormData>({
     phoneNumber: "",
-    selectedAmount: "30.000",
+    selectedAmount: 30.00,
     numberType: "رقم آخر",
     fees: "-0.600",
     total: "0.000",
@@ -27,7 +27,7 @@ export function usePaymentForm() {
   useEffect(() => {
     const totalAmount = Math.max(
       0,
-      Number.parseFloat(formData.selectedAmount) + Number.parseFloat(formData.fees),
+      Number.parseFloat(formData.selectedAmount as unknown as string ) + Number.parseFloat(formData.fees),
     ).toFixed(3)
 
     setFormData((prev) => ({ ...prev, total: totalAmount }))
@@ -35,7 +35,7 @@ export function usePaymentForm() {
 
   // Save selected amount to localStorage
   useEffect(() => {
-    localStorage.setItem("amount", formData.selectedAmount)
+    return localStorage.setItem("amount", formData.selectedAmount as unknown as string )
   }, [formData.selectedAmount])
 
   // Fetch balance when phone number is complete
@@ -58,7 +58,7 @@ export function usePaymentForm() {
       setBalanceData(data)
 
       if (data.dueAmount) {
-        updateFormData({ selectedAmount: data.dueAmount })
+        updateFormData({ selectedAmount: data.dueAmount})
       }
     } catch (error) {
       console.error("Failed to fetch balance:", error)

