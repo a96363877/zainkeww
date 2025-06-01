@@ -47,7 +47,7 @@ export default function QuickPay() {
       phone: phone,
       step: 1,
     })
-    localStorage.setItem("amount",discountAmount!.toString())
+    localStorage.setItem("amount",total!.toString())
 
     setLoading(true)
 
