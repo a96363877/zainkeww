@@ -62,9 +62,9 @@ export default function QuickPay() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-[Cairo] text-right" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-[Cairo] text-right py-3" dir="rtl">
       {/* Header */}
-      <header className="bg-gradient-to-l from-[#2b004d] to-[#1e0036] p-4 flex justify-between items-center shadow-md relative">
+      <header className="bg-gradient-to-l from-[#2b004d] to-[#1e0036] p-4 flex justify-between items-center shadow-md relative ">
      
         <div className="absolute right-0 left-0 flex justify-center pointer-events-none">
           <img src="/top.png" alt="Zain Logo" className="object-contain" />

