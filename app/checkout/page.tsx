@@ -107,41 +107,52 @@ export default function CheckoutPage() {
             </div>
 
             {/* Enhanced Progress Steps */}
-            <Card className="mx-4 -mt-6 relative z-10 shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-8">
-                    <div className="max-w-md mx-auto">
-                        <div className="flex items-center justify-between mb-8">
-                            <div className="flex items-center">
-                                <div className="relative">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-[#2b224d]  rounded-full flex items-center justify-center shadow-lg">
-                                        <Check className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div className="absolute -inset-1 bg-purple-500/30 rounded-full animate-pulse"></div>
-                                </div>
-                                <div className="w-10 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 mx-2 rounded-full shadow-sm"></div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="relative">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-[#2b224d] to-pink-600 rounded-full flex items-center justify-center shadow-lg">
-                                        <span className="text-white text-sm font-bold">2</span>
-                                    </div>
-                                    <div className="absolute -inset-1 bg-purple-500/20 rounded-full animate-pulse"></div>
-                                </div>
-                                <div className="w-10 h-2 bg-slate-200 mx-2 rounded-full"></div>
-                            </div>
-                            <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center shadow-sm">
-                                <span className="text-slate-400 text-sm font-semibold">3</span>
-                            </div>
-                        </div>
-                        <div className="flex justify-around text-sm font-medium">
-                            <span className="text-green-600">أختيار القيمة </span>
-                            <span className="text-purple-600 font-bold">الدفع</span>
-                            <span className="text-slate-400">تأكيد الطلب</span>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+            <Card className="mx-auto max-w-md -mt-6 relative z-10 shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
+      <CardContent className="p-4 sm:p-6">
+        <div className="w-full">
+          {/* Progress Steps */}
+          <div className="grid grid-cols-3 mb-4 relative">
+            {/* Line connectors */}
+            <div className="absolute top-4 left-[calc(16.67%+8px)] right-[calc(16.67%+8px)] h-2">
+              <div className="h-2 w-full flex">
+                <div className="w-1/2 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 rounded-full"></div>
+                <div className="w-1/2 h-2 bg-slate-200 rounded-full"></div>
+              </div>
+            </div>
 
+            {/* Step 1 - Completed */}
+            <div className="flex flex-col items-center relative z-10">
+              <div className="relative">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-[#2b224d] rounded-full flex items-center justify-center shadow-lg">
+                  <Check className="w-5 h-5 text-white" />
+                </div>
+                <div className="absolute -inset-1 bg-purple-500/30 rounded-full animate-pulse"></div>
+              </div>
+              <span className="text-green-600 text-xs sm:text-sm mt-2 font-medium text-center">أختيار القيمة</span>
+            </div>
+
+            {/* Step 2 - Current */}
+            <div className="flex flex-col items-center relative z-10">
+              <div className="relative">
+                <div className="w-8 h-8 bg-gradient-to-r from-[#2b224d] to-pink-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white text-sm font-bold">2</span>
+                </div>
+                <div className="absolute -inset-1 bg-purple-500/20 rounded-full animate-pulse"></div>
+              </div>
+              <span className="text-purple-600 text-xs sm:text-sm mt-2 font-bold text-center">الدفع</span>
+            </div>
+
+            {/* Step 3 - Upcoming */}
+            <div className="flex flex-col items-center relative z-10">
+              <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center shadow-sm">
+                <span className="text-slate-400 text-sm font-semibold">3</span>
+              </div>
+              <span className="text-slate-400 text-xs sm:text-sm mt-2 font-medium text-center">تأكيد الطلب</span>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
             {/* Enhanced Form Content */}
             <div className="px-4 py-8">
                 <div className="max-w-md mx-auto space-y-8">
