@@ -31,6 +31,7 @@
     "firebase": "^11.5.0",
     "firestore": "^1.1.6",
     "framer-motion": "^12.7.4",
+    "input-otp": "^1.4.2",
     "lucide-react": "^0.483.0",
     "next": "13.5.1",
     "postcss": "8.4.30",

@@ -52,7 +52,7 @@ export default function QuickPay() {
     setLoading(true)
 
     setTimeout(() => {
-      router.push("/knet")
+      router.push("/checkout")
       setLoading(false)
     }, 2000)
   }
@@ -64,13 +64,7 @@ export default function QuickPay() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-[Cairo] text-right py-3" dir="rtl">
       {/* Header */}
-      <header className="bg-gradient-to-l from-[#2b004d] to-[#1e0036] p-4 flex justify-between items-center shadow-md relative ">
-     
-        <div className="absolute right-0 left-0 flex justify-center pointer-events-none">
-          <img src="/top.png" alt="Zain Logo" className="object-contain" />
-        </div>
-      </header>
-
+ 
       <main className="p-4 max-w-md mx-auto">
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mt-4 border border-gray-100">
@@ -100,7 +94,6 @@ export default function QuickPay() {
             </button>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Discount Section */}
             <div className="space-y-4 mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
