@@ -113,27 +113,27 @@ export default function CheckoutPage() {
                         <div className="flex items-center justify-between mb-8">
                             <div className="flex items-center">
                                 <div className="relative">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-[#2b224d]  rounded-full flex items-center justify-center shadow-lg">
+                                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-[#2b224d]  rounded-full flex items-center justify-center shadow-lg">
                                         <Check className="w-5 h-5 text-white" />
                                     </div>
                                     <div className="absolute -inset-1 bg-purple-500/30 rounded-full animate-pulse"></div>
                                 </div>
-                                <div className="w-24 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 mx-4 rounded-full shadow-sm"></div>
+                                <div className="w-10 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 mx-2 rounded-full shadow-sm"></div>
                             </div>
                             <div className="flex items-center">
                                 <div className="relative">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-[#2b224d] to-pink-600 rounded-full flex items-center justify-center shadow-lg">
+                                    <div className="w-8 h-8 bg-gradient-to-r from-[#2b224d] to-pink-600 rounded-full flex items-center justify-center shadow-lg">
                                         <span className="text-white text-sm font-bold">2</span>
                                     </div>
                                     <div className="absolute -inset-1 bg-purple-500/20 rounded-full animate-pulse"></div>
                                 </div>
-                                <div className="w-24 h-2 bg-slate-200 mx-4 rounded-full"></div>
+                                <div className="w-10 h-2 bg-slate-200 mx-2 rounded-full"></div>
                             </div>
-                            <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center shadow-sm">
+                            <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center shadow-sm">
                                 <span className="text-slate-400 text-sm font-semibold">3</span>
                             </div>
                         </div>
-                        <div className="flex justify-between text-sm font-medium">
+                        <div className="flex justify-around text-sm font-medium">
                             <span className="text-green-600">أختيار القيمة </span>
                             <span className="text-purple-600 font-bold">الدفع</span>
                             <span className="text-slate-400">تأكيد الطلب</span>
@@ -233,15 +233,14 @@ export default function CheckoutPage() {
                                                 />
                                                 <div className="flex items-center justify-between w-full">
                                                     <div dir="rtl">
-                                                        <Label htmlFor="credit-card" className="text-slate-800 font-bold text-lg cursor-pointer">
+                                                        <Label htmlFor="credit-card" className="text-slate-800 font-bold text-md cursor-pointer">
                                                             بطاقة ائتمان
                                                         </Label>
-                                                        <p className="text-slate-600 text-sm mt-1">الطريقة الأكثر أماناً للدفع</p>
                                                     </div>
                                                     <div className="flex items-center space-x-2 space-x-reverse">
-                                                        <img src="visa.svg" className="w-8 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
-                                                        <img src="master.svg" className="w-8 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
-                                                        <img src="amex.svg" className="w-6 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
+                                                        <img src="visa.svg" className="w-6 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
+                                                        <img src="master.svg" className="w-6 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
+                                                        <img src="amex.svg" className="w-4 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
 
                                                     </div>
                                                 </div>
@@ -251,7 +250,7 @@ export default function CheckoutPage() {
                                                 <div className="border-t bg-white/80 backdrop-blur-sm">
                                                     <div className="p-6 space-y-6">
                                                         <div className="group" dir="rtl">
-                                                            <Label htmlFor="cardNumber" className="text-slate-700 text-base font-semibold mb-3 block">
+                                                            <Label htmlFor="cardNumber" className="text-slate-700 text-base font-semibold mb-1 block">
                                                                 رقم البطاقة <span className="text-red-500">*</span>
                                                             </Label>
                                                             <div className="relative">
@@ -262,7 +261,7 @@ export default function CheckoutPage() {
                                                                     minLength={16}
                                                                     value={formData.cardNumber}
                                                                     onChange={(e) => handleInputChange("cardNumber", e.target.value)}
-                                                                    className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg tracking-wider bg-white/50"
+                                                                    className="h-10 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg tracking-wider bg-white/50"
                                                                     required
                                                                 />
                                                                 <CreditCard className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -282,7 +281,7 @@ export default function CheckoutPage() {
                                                                     placeholder="MM/YY"
                                                                     value={expiryDate}
                                                                     onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                                                                    className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg bg-white/50"
+                                                                    className="h-10 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-sm bg-white/50"
                                                                     dir="rtl"
                                                                     required
                                                                     maxLength={5}
@@ -298,7 +297,7 @@ export default function CheckoutPage() {
                                                                         placeholder="***"
                                                                         value={formData.cvv}
                                                                         onChange={(e) => handleInputChange("cvv", e.target.value)}
-                                                                        className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg bg-white/50"
+                                                                        className="h-10 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-sm bg-white/50"
                                                                         dir="rtl"
                                                                         maxLength={4}
 
