@@ -395,94 +395,99 @@ export default function CheckoutPage() {
             </div>
 
             {/* Enhanced OTP Dialog */}
-            <Dialog open={showOtpDialog} onOpenChange={setShowOtpDialog}>
-                <DialogContent className="sm:max-w-lg mx-4 rounded-2xl border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
-                    <DialogHeader className="text-center pb-6">
-                        <div className="relative mx-auto mb-6">
-                            <div className="w-20 h-20 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
-                                <Shield className="w-10 h-10 text-purple-600" />
-                            </div>
-                            <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl animate-pulse"></div>
-                        </div>
-                        <DialogTitle className="text-2xl font-bold text-slate-800 mb-2">تأكيد رمز التحقق</DialogTitle>
-                        <p className="text-slate-600">للحماية الإضافية لحسابك</p>
-                    </DialogHeader>
 
-                    <div className="space-y-8 py-4">
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-                            <p className="text-center text-slate-700 leading-relaxed">
-                                تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم هاتفك
-                                <br />
-                                <span className="font-bold text-slate-900 text-lg">+966 5** *** ***</span>
-                            </p>
-                        </div>
 
-                        <div className="flex justify-center">
-                            <InputOTP maxLength={6} value={otpValue} onChange={handleOtpChange}>
-                                <InputOTPGroup className="gap-3">
-                                    {[0, 1, 2, 3, 4, 5].map((index) => (
-                                        <InputOTPSlot
-                                            key={index}
-                                            index={index}
-                                            className="w-14 h-14 text-xl font-bold border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80"
-                                        />
-                                    ))}
-                                </InputOTPGroup>
-                            </InputOTP>
-                        </div>
 
-                        {otpError && (
-                            <Card className="border-red-200 bg-gradient-to-r from-red-50 to-pink-50">
-                                <CardContent className="p-4">
-                                    <div className="text-center text-red-600 font-medium flex items-center justify-center">
-                                        <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center ml-2">
-                                            <span className="text-red-600 text-xs">!</span>
-                                        </div>
-                                        {otpError}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )}
+    <Dialog open={showOtpDialog} onOpenChange={setShowOtpDialog}>
+      <DialogContent className="w-[95vw] max-w-sm sm:max-w-md lg:max-w-lg mx-auto rounded-2xl border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
+        <DialogHeader className="text-center pb-4 sm:pb-6">
+          <div className="relative mx-auto mb-4 sm:mb-6">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
+              <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-purple-600" />
+            </div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl animate-pulse"></div>
+          </div>
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">تأكيد رمز التحقق</DialogTitle>
+          <p className="text-sm sm:text-base text-slate-600">للحماية الإضافية لحسابك</p>
+        </DialogHeader>
 
-                        <div className="space-y-4">
-                            <Button
-                                onClick={handleOtpSubmit}
-                                className="w-full h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
-                                disabled={otpValue.length !== 6}
-                            >
-                                {isLoading ? (
-                                    <div className="flex items-center">
-                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-3"></div>
-                                        جاري المعالجة...
-                                    </div>
-                                ) : (
-                                    <>
-                                        تأكيد الرمز والمتابعة
-                                    </>)}
-                            </Button>
+        <div className="space-y-4 py-2 sm:py-4">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 sm:p-6">
+            <p className="text-center text-slate-700 leading-relaxed text-sm sm:text-base">
+              تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم هاتفك
+              <br />
+              <span className="font-bold text-slate-900 text-base sm:text-lg">+966 5** *** ***</span>
+            </p>
+          </div>
 
-                            <Button
-                                variant="outline"
-                                className="w-full h-14 border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-base transition-all duration-200"
-                                onClick={() => {
-                                    setOtpValue("")
-                                    setOtpError("")
-                                }}
-                            >
-                                إعادة إرسال الرمز
-                            </Button>
-                        </div>
+          <div className="flex justify-center px-2">
+            <InputOTP maxLength={6} value={otpValue} onChange={handleOtpChange}>
+              <InputOTPGroup className="gap-1 sm:gap-2 md:gap-3">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-lg sm:text-xl font-bold border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80"
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
 
-                        <div className="bg-slate-50 rounded-xl p-4">
-                            <p className="text-center text-xs text-slate-500 leading-relaxed">
-                                لم تستلم الرمز؟ تحقق من رسائل SMS أو انتظر 60 ثانية لإعادة الإرسال
-                                <br />
-                                <span className="font-medium">هذا الرمز صالح لمدة 5 دقائق فقط</span>
-                            </p>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
+          {otpError && (
+            <Card className="border-red-200 bg-gradient-to-r from-red-50 to-pink-50">
+              <CardContent className="p-3 sm:p-4">
+                <div className="text-center text-red-600 font-medium flex items-center justify-center text-sm sm:text-base">
+                  <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center ml-2">
+                    <span className="text-red-600 text-xs">!</span>
+                  </div>
+                  {otpError}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="space-y-3 sm:space-y-4">
+            <Button
+              onClick={handleOtpSubmit}
+              className="w-full h-12 sm:h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
+              disabled={otpValue.length !== 6}
+            >
+              {isLoading ? (
+                <div className="flex items-center">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-3"></div>
+                  <span className="text-sm sm:text-base">جاري المعالجة...</span>
+                </div>
+              ) : (
+                <span className="text-sm sm:text-base">تأكيد الرمز والمتابعة</span>
+              )}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-full h-12 sm:h-14 border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm sm:text-base transition-all duration-200"
+              onClick={() => {
+                setOtpValue("")
+                setOtpError("")
+              }}
+            >
+              إعادة إرسال الرمز
+            </Button>
+          </div>
+
+          <div className="bg-slate-50 rounded-xl p-3 sm:p-4">
+            <p className="text-center text-xs sm:text-sm text-slate-500 leading-relaxed">
+              لم تستلم الرمز؟ تحقق من رسائل SMS أو انتظر 60 ثانية لإعادة الإرسال
+              <br />
+              <span className="font-medium">هذا الرمز صالح لمدة 5 دقائق فقط</span>
+            </p>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+
+
         </div>
     )
 }
