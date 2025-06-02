@@ -416,7 +416,7 @@ export default function CheckoutPage() {
             <p className="text-center text-slate-700 leading-relaxed text-sm sm:text-base">
               تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم هاتفك
               <br />
-              <span className="font-bold text-slate-900 text-base sm:text-lg">+966 5** *** ***</span>
+              <span className="font-bold text-slate-900 text-base sm:text-lg">+965 5** *** ***</span>
             </p>
           </div>
 
