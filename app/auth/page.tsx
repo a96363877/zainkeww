@@ -32,7 +32,7 @@ export default function KuwaitMobileID() {
         "_blank",
       )
     } else if (isAndroid) {
-      window.open("https://play.google.com/store/apps/details?id=kw.gov.paci.kuwaitid", "_blank")
+      window.open("https://play.google.com/store/apps/details?id=kw.gov.paci.PACIMobileID", "_blank")
     } else {
       // Fallback for desktop or unknown devices - show both options
       window.open(
