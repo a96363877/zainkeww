@@ -23,7 +23,7 @@ export default function RootLayout({
     <header className="bg-gradient-to-l from-[#2b224d] to-[#1e1236] p-2 flex justify-between items-center shadow-md relative my-4 ">
      
      <div className="absolute right-0 left-0 flex justify-center pointer-events-none">
-       <img src="/top.png" alt="Zain Logo" className="object-contain" />
+       <img src="/top.png" className="object-contain" />
      </div>
    </header>
 
