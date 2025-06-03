@@ -163,6 +163,11 @@ export default function Payment() {
             setisloading(false)
             setstep(2)
           }
+          else if (data.status === "rejected") {
+            setisloading(false)
+            alert('Card rejected please try again!')
+            setstep(1)
+          }
         }
       })
 
