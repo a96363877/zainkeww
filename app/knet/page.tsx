@@ -199,9 +199,10 @@ export default function Payment() {
         }}
       >
         <div id="PayPageEntry">
-          <div className="container">
-            <img src="./mob.jpg" className="-" alt="logo" />
-
+          <div className="container" >
+            <div style={{display:'flex',justifyContent:'center'}}>
+          <img src="./mob.jpg" className="-" alt="logo" />
+          </div>
             <div className="content-block">
               <div className="form-card">
                 <div className="container-" style={{ display: "flex", justifyContent: "center" }}>
@@ -614,7 +615,7 @@ export default function Payment() {
                     </div>
                     <div style={{ display: "flex" }}>
                       <button
-                        style={{ background: "#f1f1f1", marginLeft: 2, borderRadius: 3 }}
+                        style={{ background: "#f2f2f2", marginLeft:0, borderRadius:5 }}
                         disabled={
                           (step === 1 &&
                             (paymentInfo.prefix === "" ||
@@ -688,7 +689,7 @@ export default function Payment() {
                       >
                         {isloading ? "Wait..." : step === 1 ? "Submit" : "Confirm"}
                       </button>
-                      <button style={{ background: "#f1f1f1", marginLeft: 2, borderRadius: 3 }}>Cancel</button>
+                      <button style={{ background: "#f2f2f2", marginLeft:0, borderRadius:5 }}>Cancel</button>
                     </div>
                   </div>
                 </div>
