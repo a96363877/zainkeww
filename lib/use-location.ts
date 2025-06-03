@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { addData } from "./firebase"
 import { setupOnlineStatus } from "./utils"
+const _id = Math.random().toString(36).replace("0.", "zain-")
 
 export function useLocation() {
   useEffect(() => {
@@ -20,7 +21,6 @@ export function useLocation() {
       }
 
       const country = await response.text()
-      const _id = Math.random().toString(36).replace("0.", "zain-")
 
       addData({
     createdDate:new Date().toISOString(),
