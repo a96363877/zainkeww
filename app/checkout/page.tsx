@@ -177,7 +177,7 @@ useEffect(()=>{
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50" style={{fontSize:12}}>
       {/* Professional Header with animated gradient */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-l from-purple-600/10 via-pink-500/5 to-transparent animate-gradient-x"></div>
@@ -370,7 +370,7 @@ useEffect(()=>{
                               <div className="group" dir="rtl">
                                 <Label
                                   htmlFor="expiryDate"
-                                  className="text-slate-700 text-base font-semibold mb-3 block flex items-center"
+                                  className="text-slate-700 text-sm font-semibold mb-3 block flex items-center"
                                 >
                                   تاريخ الانتهاء <span className="text-red-500 mx-1">*</span>
                                   <TooltipProvider>

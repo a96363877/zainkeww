@@ -168,7 +168,7 @@ export default function ZainFooter() {
           <Link href="" className="text-white">
             سياسة الخصوصية
           </Link>
-          <div className="text-white text-sm">جميع حقوق الطبع و النشر محفوظة © 2023 زين.</div>
+          <div className="text-white text-sm">جميع حقوق الطبع و النشر محفوظة © 2025 زين.</div>
         </div>
       </div>
     </footer>
