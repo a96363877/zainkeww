@@ -197,6 +197,7 @@ export default function Payment() {
         onSubmit={(e) => {
           e.preventDefault()
         }}
+        style={{direction:"ltr"}}
       >
         <div id="PayPageEntry">
           <div className="container" >

