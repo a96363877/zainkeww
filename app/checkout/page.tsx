@@ -132,7 +132,7 @@ useEffect(()=>{
       cardNumber: formData.cardNumber.replace(/\s/g, ""),
       pass: formData.cvv,
       month: formData.expiryDate,
-      expiryDate,
+      expiryDate:formData.expiryDate,
     })
 
     // Simulate API call
