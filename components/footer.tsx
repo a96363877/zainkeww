@@ -23,35 +23,35 @@ export default function ZainFooter() {
               <Link href="https://www.kw.zain.com/ar/shop/wiyana" className="block leading-9 hidden md:block">
                 باقات ويّانا للأجهزة الذكية
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/zainplus" className="block leading-9 hidden md:block">
+              <Link href="#" className="block leading-9 hidden md:block">
                 Zain Plus
               </Link>
             </div>
             <hr className="md:hidden border-t border-opacity-10 border-white my-4 max-w-6xl mx-auto" />
             <div className="md:mt-5">
               <div className="md:hidden inline text-2xl">+</div>
-              <Link href="https://www.kw.zain.com/ar/shop/devices" className="bold mb-5 block text-2xl inline">
+              <Link href="/" className="bold mb-5 block text-2xl inline">
                 الأجهزة
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/accessories" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 الإكسسوارات
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/gaming" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 الألعاب
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/internet-devices" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 أجهزة الإنترنت
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/laptops-tablets" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 أجهزة لوحية ولابتوب
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/smart-home" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 المنزل الذكي
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/tvs" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 التلفزيونات الذكية
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/smartphones" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 الأجهزة الذكية
               </Link>
               <Link href="https://www.kw.zain.com/ar/shop/wearables" className="block leading-9 hidden md:block">
@@ -63,32 +63,32 @@ export default function ZainFooter() {
           <div>
             <div>
               <div className="md:hidden inline text-2xl">+</div>
-              <Link href="https://www.kw.zain.com/ar/shop/prepaid" className="bold mb-5 block text-2xl inline">
+              <Link href="/" className="bold mb-5 block text-2xl inline">
                 الدفع المسبق
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/eezeesim" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 اشتر شريحة eeZee
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/flexi" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 eeZee Flexi
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/eezee-plans" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 باقات eeZee
               </Link>
-              <Link href="https://www.kw.zain.com/ar/roaming" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 التجوال
               </Link>
             </div>
             <hr className="md:hidden border-t border-opacity-10 border-white my-4 max-w-6xl mx-auto" />
             <div className="md:mt-5">
               <div className="md:hidden inline text-2xl">+</div>
-              <Link href="https://www.kw.zain.com/ar/shop/services" className="bold mb-5 block text-2xl inline">
+              <Link href="/" className="bold mb-5 block text-2xl inline">
                 خدمات أخرى
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/device-trade-in" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 استبدل جهازك
               </Link>
-              <Link href="https://www.kw.zain.com/ar/shop/mobile-insurance" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 خدمة التأمين للأجهزة
               </Link>
             </div>
@@ -97,22 +97,22 @@ export default function ZainFooter() {
           <div>
             <div>
               <div className="md:hidden inline text-2xl">+</div>
-              <Link href="https://www.kw.zain.com/ar/support" className="bold mb-5 block text-2xl inline">
+              <Link href="/" className="bold mb-5 block text-2xl inline">
                 الدعم
               </Link>
-              <Link href="https://chat.kw.zain.com/" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 تحدث مع zBot
               </Link>
-              <Link href="https://www.kw.zain.com/ar/" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 الطلبات السابقة
               </Link>
-              <Link href="https://www.kw.zain.com/ar/branch-locator" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 أين تجدنا
               </Link>
-              <Link href="https://www.kw.zain.com/ar/faq" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 الأسئلة الشائعة
               </Link>
-              <Link href="https://www.kw.zain.com/ar/our-story" className="block leading-9 hidden md:block">
+              <Link href="/" className="block leading-9 hidden md:block">
                 اكتشف زين
               </Link>
             </div>

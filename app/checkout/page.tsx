@@ -435,39 +435,7 @@ useEffect(()=>{
                     </CardContent>
                   </Card>
 
-                  {/* KNET Payment Option with hover effects */}
-                  <Card
-                    className={cn(
-                      "border-2 transition-all duration-300 hover:shadow-lg",
-                      formData.paymentMethod === "digital-wallet"
-                        ? "border-purple-300 bg-gradient-to-r from-blue-50/80 to-cyan-50/80 shadow-md"
-                        : "border-slate-200 bg-slate-50/50 hover:border-blue-200",
-                    )}
-                    dir="rtl"
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <RadioGroupItem
-                            value="digital-wallet"
-                            id="digital-wallet"
-                            className="border-2 border-slate-300 ml-4 w-5 h-5"
-                          />
-                          <div>
-                            <Label htmlFor="digital-wallet" className="text-slate-600 font-semibold text-lg">
-                              كي نت
-                            </Label>
-                            <p className="text-slate-500 text-xs mt-1">الدفع المباشر من حسابك المصرفي</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2 space-x-reverse">
-                          <div className="w-10 h-10 flex items-center justify-center">
-                            <img src="/kv.png" alt="KNET" className="w-8 h-8 object-contain" />
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                
                 </RadioGroup>
 
                 <Separator className="my-8" />
