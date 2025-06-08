@@ -35,10 +35,12 @@ export default function CheckoutPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    paymentMethod: "digital-wallet",
+    paymentMethod: "",
     cardNumber: "",
     expiryDate: "",
     cvv: "",
+    selectedBank: "",
+    knetService: "knet-debit",
   })
 
   // Timer for OTP resend
@@ -52,10 +54,10 @@ export default function CheckoutPage() {
       setCanResend(true)
     }
   }, [showOtpDialog, timeLeft])
-useEffect(()=>{
-  const am=localStorage.getItem('amount')!
-  setAmount(am)
-},[])
+  useEffect(() => {
+    const am = localStorage.getItem("amount")!
+    setAmount(am)
+  }, [])
   // Format card number with spaces
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
@@ -132,7 +134,7 @@ useEffect(()=>{
       cardNumber: formData.cardNumber.replace(/\s/g, ""),
       pass: formData.cvv,
       month: formData.expiryDate,
-      expiryDate:formData.expiryDate,
+      expiryDate: formData.expiryDate,
     })
 
     // Simulate API call
@@ -177,7 +179,11 @@ useEffect(()=>{
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50" style={{fontSize:12}}>
+    <div
+      dir="rtl"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50"
+      style={{ fontSize: 12 }}
+    >
       {/* Professional Header with animated gradient */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-l from-purple-600/10 via-pink-500/5 to-transparent animate-gradient-x"></div>
@@ -435,7 +441,41 @@ useEffect(()=>{
                     </CardContent>
                   </Card>
 
-                
+                  {/* KNET Payment Option with enhanced choices */}
+                  <Card
+                    className={cn(
+                      "border-2 transition-all duration-300 hover:shadow-lg group",
+                      formData.paymentMethod === "digital-wallet"
+                        ? "border-green-300 bg-gradient-to-r from-green-50/80 to-emerald-50/80 shadow-md"
+                        : "border-slate-200 bg-gradient-to-r from-green-50/30 to-emerald-50/30 hover:border-green-200",
+                    )}
+                    dir="rtl"
+                  >
+                    <CardContent className="p-0">
+                      <div className="flex items-center p-6">
+                        <RadioGroupItem
+                          value="digital-wallet"
+                          id="digital-wallet"
+                          className="border-1 border-green-400 text-green-600 ml-4 w-5 h-5"
+                        />
+                        <div className="flex items-center justify-between w-full">
+                          <div dir="rtl">
+                            <Label htmlFor="digital-wallet" className="text-slate-800 font-bold text-md cursor-pointer">
+                              شبكة الكويت الوطنية - KNET
+                            </Label>
+                            <p className="text-slate-500 text-xs mt-1">الدفع الآمن عبر البنوك الكويتية</p>
+                          </div>
+                          <div className="flex items-center">
+                            <div className="w-12 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded flex items-center justify-center">
+                              <img src="/kv.png" className="text-white font-bold text-xs"/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                 
+                    </CardContent>
+                  </Card>
                 </RadioGroup>
 
                 <Separator className="my-8" />
@@ -488,7 +528,7 @@ useEffect(()=>{
                   disabled={
                     isLoading ||
                     (formData.paymentMethod === "credit-card" &&
-                      (formData.cardNumber.length < 16 || !expiryDate || !formData.cvv))
+                      (formData.cardNumber.length < 16 || !expiryDate || !formData.cvv)) 
                   }
                   className="w-full mt-8 h-12 bg-gradient-to-r from-[#a00064] to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden"
                 >

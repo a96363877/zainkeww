@@ -34,42 +34,42 @@ export default function GlobalTelecommunications() {
 
   const globalStats = [
     {
-      title: "Global Subscribers",
+      title: "المشتركين العالميين",
       value: "8.58B",
       change: "+3.2%",
       icon: <Users className="h-6 w-6" />,
       color: "from-blue-500 to-blue-600",
     },
     {
-      title: "5G Coverage",
+      title: "تغطية 5G",
       value: "35%",
       change: "+12%",
       icon: <Radio className="h-6 w-6" />,
       color: "from-green-500 to-green-600",
     },
     {
-      title: "Internet Users",
+      title: "مستخدمي الإنترنت",
       value: "5.16B",
       change: "+1.9%",
       icon: <Globe className="h-6 w-6" />,
       color: "from-purple-500 to-purple-600",
     },
     {
-      title: "Mobile Penetration",
+      title: "انتشار الهاتف المحمول",
       value: "109%",
       change: "+0.8%",
       icon: <Smartphone className="h-6 w-6" />,
       color: "from-teal-500 to-teal-600",
     },
     {
-      title: "Avg Speed",
+      title: "متوسط السرعة",
       value: "85 Mbps",
       change: "+15%",
       icon: <Zap className="h-6 w-6" />,
       color: "from-orange-500 to-orange-600",
     },
     {
-      title: "Market Value",
+      title: "القيمة السوقية",
       value: "$1.8T",
       change: "+4.1%",
       icon: <TrendingUp className="h-6 w-6" />,
@@ -80,7 +80,7 @@ export default function GlobalTelecommunications() {
   const regions = [
     {
       id: "global",
-      name: "Global Overview",
+      name: "نظرة عالمية",
       subscribers: "8.58B",
       coverage: "35%",
       avgSpeed: "85 Mbps",
@@ -88,7 +88,7 @@ export default function GlobalTelecommunications() {
     },
     {
       id: "asia",
-      name: "Asia Pacific",
+      name: "آسيا والمحيط الهادئ",
       subscribers: "4.2B",
       coverage: "42%",
       avgSpeed: "95 Mbps",
@@ -96,7 +96,7 @@ export default function GlobalTelecommunications() {
     },
     {
       id: "europe",
-      name: "Europe",
+      name: "أوروبا",
       subscribers: "1.1B",
       coverage: "78%",
       avgSpeed: "120 Mbps",
@@ -104,7 +104,7 @@ export default function GlobalTelecommunications() {
     },
     {
       id: "americas",
-      name: "Americas",
+      name: "الأمريكتين",
       subscribers: "1.8B",
       coverage: "65%",
       avgSpeed: "110 Mbps",
@@ -112,7 +112,7 @@ export default function GlobalTelecommunications() {
     },
     {
       id: "africa",
-      name: "Africa",
+      name: "أفريقيا",
       subscribers: "1.2B",
       coverage: "18%",
       avgSpeed: "45 Mbps",
@@ -120,7 +120,7 @@ export default function GlobalTelecommunications() {
     },
     {
       id: "middle-east",
-      name: "Middle East",
+      name: "الشرق الأوسط",
       subscribers: "280M",
       coverage: "55%",
       avgSpeed: "75 Mbps",
@@ -130,56 +130,56 @@ export default function GlobalTelecommunications() {
 
   const majorCompanies = [
     {
-      name: "China Mobile",
-      country: "China",
+      name: "تشاينا موبايل",
+      country: "الصين",
       subscribers: "975M",
       revenue: "$109B",
-      technology: "5G Leader",
+      technology: "رائدة 5G",
       color: "from-red-500 to-red-600",
       icon: <Building2 className="h-6 w-6" />,
     },
     {
-      name: "Vodafone Group",
-      country: "UK",
+      name: "فودافون جروب",
+      country: "المملكة المتحدة",
       subscribers: "300M",
       revenue: "$52B",
-      technology: "IoT Pioneer",
+      technology: "رائدة إنترنت الأشياء",
       color: "from-red-400 to-pink-500",
       icon: <Network className="h-6 w-6" />,
     },
     {
-      name: "Verizon",
-      country: "USA",
+      name: "فيريزون",
+      country: "الولايات المتحدة",
       subscribers: "143M",
       revenue: "$136B",
-      technology: "5G Ultra",
+      technology: "5G الترا",
       color: "from-blue-500 to-indigo-600",
       icon: <Satellite className="h-6 w-6" />,
     },
     {
-      name: "AT&T",
-      country: "USA",
+      name: "إيه تي آند تي",
+      country: "الولايات المتحدة",
       subscribers: "230M",
       revenue: "$171B",
-      technology: "Fiber Leader",
+      technology: "رائدة الألياف",
       color: "from-blue-400 to-cyan-500",
       icon: <Wifi className="h-6 w-6" />,
     },
     {
-      name: "Deutsche Telekom",
-      country: "Germany",
+      name: "دويتشه تيليكوم",
+      country: "ألمانيا",
       subscribers: "242M",
       revenue: "$122B",
-      technology: "Edge Computing",
+      technology: "الحوسبة الطرفية",
       color: "from-pink-500 to-purple-600",
       icon: <Cloud className="h-6 w-6" />,
     },
     {
-      name: "SoftBank",
-      country: "Japan",
+      name: "سوفت بنك",
+      country: "اليابان",
       subscribers: "88M",
       revenue: "$47B",
-      technology: "AI Integration",
+      technology: "تكامل الذكاء الاصطناعي",
       color: "from-yellow-500 to-orange-600",
       icon: <Brain className="h-6 w-6" />,
     },
@@ -188,102 +188,102 @@ export default function GlobalTelecommunications() {
   const technologies = [
     {
       id: "5g",
-      name: "5G Networks",
+      name: "شبكات 5G",
       adoption: "35%",
-      description: "Next-generation wireless technology with ultra-low latency",
+      description: "تقنية لاسلكية من الجيل التالي بزمن استجابة منخفض للغاية",
       features: [
-        "Speeds up to 20 Gbps theoretical",
-        "1ms latency for real-time applications",
-        "Massive IoT device connectivity",
-        "Network slicing capabilities",
-        "Enhanced mobile broadband",
-        "Mission-critical communications",
+        "سرعات تصل إلى 20 جيجابت في الثانية نظرياً",
+        "زمن استجابة 1 مللي ثانية للتطبيقات الفورية",
+        "اتصال هائل لأجهزة إنترنت الأشياء",
+        "قدرات تقسيم الشبكة",
+        "النطاق العريض المحمول المحسن",
+        "اتصالات حرجة المهام",
       ],
       regions: {
-        "Asia Pacific": "42%",
-        Europe: "78%",
-        Americas: "65%",
-        Africa: "18%",
-        "Middle East": "55%",
+        "آسيا والمحيط الهادئ": "42%",
+        أوروبا: "78%",
+        الأمريكتين: "65%",
+        أفريقيا: "18%",
+        "الشرق الأوسط": "55%",
       },
     },
     {
       id: "fiber",
-      name: "Fiber Optic",
+      name: "الألياف البصرية",
       adoption: "68%",
-      description: "High-speed internet infrastructure using light signals",
+      description: "بنية تحتية للإنترنت عالي السرعة باستخدام إشارات ضوئية",
       features: [
-        "Gigabit speeds for consumers",
-        "Symmetrical upload/download",
-        "Low latency and high reliability",
-        "Future-proof infrastructure",
-        "Support for 8K streaming",
-        "Enterprise-grade connectivity",
+        "سرعات جيجابت للمستهلكين",
+        "تحميل/تنزيل متماثل",
+        "زمن استجابة منخفض وموثوقية عالية",
+        "بنية تحتية مستقبلية",
+        "دعم لبث 8K",
+        "اتصال على مستوى المؤسسات",
       ],
       regions: {
-        "Asia Pacific": "72%",
-        Europe: "85%",
-        Americas: "78%",
-        Africa: "25%",
-        "Middle East": "60%",
+        "آسيا والمحيط الهادئ": "72%",
+        أوروبا: "85%",
+        الأمريكتين: "78%",
+        أفريقيا: "25%",
+        "الشرق الأوسط": "60%",
       },
     },
     {
       id: "satellite",
-      name: "Satellite Internet",
+      name: "إنترنت الأقمار الصناعية",
       adoption: "12%",
-      description: "Global connectivity through low Earth orbit satellites",
+      description: "اتصال عالمي من خلال أقمار صناعية في مدار أرضي منخفض",
       features: [
-        "Global coverage including remote areas",
-        "Low Earth orbit constellations",
-        "Disaster recovery communications",
-        "Maritime and aviation connectivity",
-        "Bridging digital divide",
-        "Emergency response networks",
+        "تغطية عالمية تشمل المناطق النائية",
+        "كوكبات المدار الأرضي المنخفض",
+        "اتصالات التعافي من الكوارث",
+        "اتصال بحري وطيران",
+        "سد الفجوة الرقمية",
+        "شبكات الاستجابة للطوارئ",
       ],
       regions: {
-        "Asia Pacific": "8%",
-        Europe: "15%",
-        Americas: "18%",
-        Africa: "22%",
-        "Middle East": "12%",
+        "آسيا والمحيط الهادئ": "8%",
+        أوروبا: "15%",
+        الأمريكتين: "18%",
+        أفريقيا: "22%",
+        "الشرق الأوسط": "12%",
       },
     },
   ]
 
   const innovations = [
     {
-      title: "6G Research",
-      description: "Next-generation wireless technology development",
+      title: "أبحاث 6G",
+      description: "تطوير تقنية لاسلكية من الجيل التالي",
       timeline: "2030+",
-      impact: "Revolutionary",
+      impact: "ثوري",
       color: "bg-gradient-to-r from-purple-500 to-pink-500",
     },
     {
-      title: "Quantum Networks",
-      description: "Ultra-secure quantum communication systems",
+      title: "شبكات الكم",
+      description: "أنظمة اتصالات كمية فائقة الأمان",
       timeline: "2028+",
-      impact: "Transformative",
+      impact: "تحويلي",
       color: "bg-gradient-to-r from-blue-500 to-cyan-500",
     },
     {
-      title: "AI-Driven Networks",
-      description: "Self-optimizing intelligent network infrastructure",
+      title: "شبكات مدعومة بالذكاء الاصطناعي",
+      description: "بنية تحتية شبكية ذكية ذاتية التحسين",
       timeline: "2025+",
-      impact: "Significant",
+      impact: "كبير",
       color: "bg-gradient-to-r from-green-500 to-teal-500",
     },
     {
-      title: "Holographic Communications",
-      description: "3D holographic video calling and conferencing",
+      title: "اتصالات هولوغرافية",
+      description: "مكالمات ومؤتمرات فيديو ثلاثية الأبعاد",
       timeline: "2027+",
-      impact: "Revolutionary",
+      impact: "ثوري",
       color: "bg-gradient-to-r from-orange-500 to-red-500",
     },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50 p-4">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50 p-4" dir="rtl">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div
@@ -297,11 +297,11 @@ export default function GlobalTelecommunications() {
               <Globe className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-5xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent">
-              Global Telecommunications
+              الاتصالات العالمية
             </h1>
           </div>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-            Comprehensive overview of the worldwide telecommunications landscape, technologies, and market trends
+            نظرة شاملة على مشهد الاتصالات العالمي والتقنيات واتجاهات السوق
           </p>
         </motion.div>
 
@@ -339,7 +339,7 @@ export default function GlobalTelecommunications() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">Regional Overview</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">نظرة إقليمية</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {regions.map((region) => (
               <Card
@@ -358,19 +358,19 @@ export default function GlobalTelecommunications() {
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <div className="text-gray-600">Subscribers</div>
+                      <div className="text-gray-600">المشتركين</div>
                       <div className="font-semibold text-lg">{region.subscribers}</div>
                     </div>
                     <div>
-                      <div className="text-gray-600">5G Coverage</div>
+                      <div className="text-gray-600">تغطية 5G</div>
                       <div className="font-semibold text-lg">{region.coverage}</div>
                     </div>
                     <div>
-                      <div className="text-gray-600">Avg Speed</div>
+                      <div className="text-gray-600">متوسط السرعة</div>
                       <div className="font-semibold text-lg">{region.avgSpeed}</div>
                     </div>
                     <div>
-                      <div className="text-gray-600">Companies</div>
+                      <div className="text-gray-600">الشركات</div>
                       <div className="font-semibold text-lg">{region.companies}</div>
                     </div>
                   </div>
@@ -387,7 +387,7 @@ export default function GlobalTelecommunications() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">Leading Global Operators</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">مشغلي الاتصالات العالميين الرائدين</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {majorCompanies.map((company, index) => (
               <Card
@@ -408,15 +408,15 @@ export default function GlobalTelecommunications() {
                 <CardContent className="p-6">
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Subscribers</span>
+                      <span className="text-gray-600">المشتركين</span>
                       <span className="font-semibold">{company.subscribers}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Revenue</span>
+                      <span className="text-gray-600">الإيرادات</span>
                       <span className="font-semibold">{company.revenue}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Technology</span>
+                      <span className="text-gray-600">التقنية</span>
                       <Badge variant="outline">{company.technology}</Badge>
                     </div>
                   </div>
@@ -433,7 +433,7 @@ export default function GlobalTelecommunications() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">Global Technologies</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">التقنيات العالمية</h2>
           <div className="space-y-6">
             {technologies.map((tech) => (
               <Card key={tech.id} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -446,7 +446,7 @@ export default function GlobalTelecommunications() {
                       <div>
                         <CardTitle className="text-xl">{tech.name}</CardTitle>
                         <p className="text-gray-600 mt-1">{tech.description}</p>
-                        <Badge className="mt-2">Global Adoption: {tech.adoption}</Badge>
+                        <Badge className="mt-2">الاعتماد العالمي: {tech.adoption}</Badge>
                       </div>
                     </div>
                     {expandedCard === tech.id ? (
@@ -466,7 +466,7 @@ export default function GlobalTelecommunications() {
                     <CardContent>
                       <div className="grid md:grid-cols-2 gap-8">
                         <div>
-                          <h4 className="font-semibold mb-3">Key Features</h4>
+                          <h4 className="font-semibold mb-3">الميزات الرئيسية</h4>
                           <div className="space-y-2">
                             {tech.features.map((feature, idx) => (
                               <div key={idx} className="flex items-start gap-2">
@@ -477,7 +477,7 @@ export default function GlobalTelecommunications() {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold mb-3">Regional Adoption</h4>
+                          <h4 className="font-semibold mb-3">الاعتماد الإقليمي</h4>
                           <div className="space-y-3">
                             {Object.entries(tech.regions).map(([region, percentage]) => (
                               <div key={region} className="flex justify-between items-center">
@@ -511,7 +511,7 @@ export default function GlobalTelecommunications() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.0 }}
         >
-          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">Future Innovations</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-slate-800">الابتكارات المستقبلية</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {innovations.map((innovation, index) => (
               <Card
@@ -542,23 +542,23 @@ export default function GlobalTelecommunications() {
         >
           <Card className="border-0 shadow-xl bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50">
             <CardContent className="p-12">
-              <h3 className="text-3xl font-bold mb-4 text-slate-800">Connect to the Global Network</h3>
+              <h3 className="text-3xl font-bold mb-4 text-slate-800">اتصل بالشبكة العالمية</h3>
               <p className="text-gray-600 mb-8 max-w-3xl mx-auto text-lg">
-                Explore opportunities in the global telecommunications market and stay ahead of technological
-                innovations shaping our connected world.
+                استكشف الفرص في سوق الاتصالات العالمية وابق في المقدمة مع الابتكارات التكنولوجية التي تشكل عالمنا
+                المتصل.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
                 >
-                  Market Analysis
+                  تحليل السوق
                 </Button>
                 <Button size="lg" variant="outline" className="border-blue-300 text-blue-600 hover:bg-blue-50">
-                  Technology Trends
+                  اتجاهات التكنولوجيا
                 </Button>
                 <Button size="lg" variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50">
-                  Investment Opportunities
+                  فرص الاستثمار
                 </Button>
               </div>
             </CardContent>
