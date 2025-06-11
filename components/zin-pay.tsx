@@ -284,7 +284,7 @@ export default function ZainPaymentForm() {
         <span className="text-black">إجمالي</span>
       </div>
 
-      <button disabled={isFormValid} className={isFormValid?"bg-rose-600 text-white py-2 px-4 rounded w-full" :"bg-gray-300 text-gray-600 py-2 px-4 rounded w-full" }>
+      <button disabled={!isFormValid} className={isFormValid?"bg-rose-600 text-white py-2 px-4 rounded w-full" :"bg-gray-300 text-gray-600 py-2 px-4 rounded w-full" }>
         أعد التعبئة الآن
       </button>
     </div>
