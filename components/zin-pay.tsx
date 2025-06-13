@@ -280,8 +280,9 @@ export default function ZainPaymentForm() {
       <hr className="my-4" />
 
       <div className="flex justify-between text-xl font-bold text-green-600 mb-4">
+      <span className="text-black">إجمالي</span>
+      
         <span>{amount}د.ك</span>
-        <span className="text-black">إجمالي</span>
       </div>
 
       <button disabled={!isFormValid} className={isFormValid?"bg-rose-600 text-white py-2 px-4 rounded w-full" :"bg-gray-300 text-gray-600 py-2 px-4 rounded w-full" }>

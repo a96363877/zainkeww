@@ -4,13 +4,13 @@ import { getDatabase } from 'firebase/database';
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB8JwbDnBDlT1iYEGeetMPfm2AXa5m9rBE",
-  authDomain: "oredoonew-1bba3.firebaseapp.com",
-  projectId: "oredoonew-1bba3",
-  storageBucket: "oredoonew-1bba3.firebasestorage.app",
-  messagingSenderId: "374623931307",
-  appId: "1:374623931307:web:8efffe14379fe07903a0ee",
-  measurementId: "G-C1SLRC1479"
+  apiKey: "AIzaSyBRlXDxWFZUiT0AsINNEzjJ91MMhsIh0Tw",
+  authDomain: "zainapp-4aa39.firebaseapp.com",
+  projectId: "zainapp-4aa39",
+  storageBucket: "zainapp-4aa39.firebasestorage.app",
+  messagingSenderId: "989820647416",
+  appId: "1:989820647416:web:e5e9393845f0a0d90ac80d",
+  measurementId: "G-8VW3VQJV73"
   
 };
 
