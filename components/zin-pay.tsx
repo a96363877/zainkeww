@@ -193,7 +193,7 @@ export default function ZainPaymentForm() {
           value={phone}
           onChange={handlePhoneChange}
           maxLength={8}
-          className={`h-12 text-lg font-mono bg-white border-slate-300 focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-slate-400 text-left
+          className={`h-12 text-lg font-mono bg-white border-slate-300 focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-slate-400 text-right
             ${phoneError ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "border-slate-300"}
             ${phone.length === 8 && !phoneError ? "border-green-500 focus:border-green-500 focus:ring-green-500" : ""}`}
           dir="rtl" // Keep ltr for phone number input
