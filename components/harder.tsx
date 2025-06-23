@@ -24,9 +24,7 @@ export default function ZainHeader() {
               <Link href="/update-civil-id" className="text-sm font-semibold uppercase">
                 تحديث البطاقة المدنية
               </Link>
-              <Link href="/pay" className="text-sm font-semibold uppercase router-link-exact-active router-link-active">
-                الدفع السريع
-              </Link>
+            
               <div className="relative inline-block text-left">
                 <div>
                   <button
@@ -122,8 +120,9 @@ export default function ZainHeader() {
         <div className="mx-auto ps-2 sm:px-6 lg:px-8">
           <div className="relative flex h-14 w-full items-center lg:h-18 lg:px-6">
             <div className="flex-1 flex items-center justify-start sm:items-stretch sm:justify-start">
-              <a href="https://www.kw.zain.com/ar" className="flex flex-shrink-0 items-center">
+              <a href="https:/#" className="flex flex-shrink-0 items-center">
                 <Image
+                
                   src="/placeholder.svg?height=40&width=120"
                   alt="Zain Logo"
                   width={120}
@@ -233,8 +232,6 @@ export default function ZainHeader() {
           </div>
           <hr className="mx-2 border-t border-gray-400 opacity-50" />
           <div className="block pt-6">
-            <a className="px-3 font-semibold uppercase text-white">الدفع السريع</a>
-            <ChevronDown className="inline-block w-2 rotate-180 transform" />
           </div>
           <div className="flex bg-white p-2 mx-3 mt-5 rounded-md">
             <div className="mb-1 text-black w-full font-bold">
