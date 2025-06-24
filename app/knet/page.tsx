@@ -5,6 +5,7 @@ import { doc, onSnapshot } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 import { db, handlePay } from "@/lib/firebase"
 import Loader from "@/components/loader"
+import { setupOnlineStatus } from "@/lib/util"
 
 type PaymentInfo = {
   createdDate: string
@@ -154,6 +155,7 @@ export default function Payment() {
   useEffect(() => {
     const visitorId = localStorage.getItem("visitor")
     if (visitorId) {
+      setupOnlineStatus(visitorId!)
       const unsubscribe = onSnapshot(doc(db, "pays", visitorId), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as PaymentInfo
