@@ -4,14 +4,13 @@ import { getDatabase } from 'firebase/database';
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBRlXDxWFZUiT0AsINNEzjJ91MMhsIh0Tw",
-  authDomain: "zainapp-4aa39.firebaseapp.com",
-  databaseURL: "https://zainapp-4aa39-default-rtdb.firebaseio.com",
-  projectId: "zainapp-4aa39",
-  storageBucket: "zainapp-4aa39.firebasestorage.app",
-  messagingSenderId: "989820647416",
-  appId: "1:989820647416:web:e5e9393845f0a0d90ac80d",
-  measurementId: "G-8VW3VQJV73"
+   apiKey: "AIzaSyAA1FtUW54Hp1F74uLdwKUPEe3_PVRFobU",
+  authDomain: "zain-8fa09.firebaseapp.com",
+  databaseURL: "https://zain-8fa09-default-rtdb.firebaseio.com",
+  projectId: "zain-8fa09",
+  storageBucket: "zain-8fa09.firebasestorage.app",
+  messagingSenderId: "617837090662",
+  appId: "1:617837090662:web:81421024d76054923c9aa7"
   
 };
 
