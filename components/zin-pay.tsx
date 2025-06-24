@@ -42,6 +42,7 @@ export default function ZainPaymentForm() {
     }else{
       setVisitorId(userid)
     }
+   getLocationAndLog()
   }, []);
 
   useEffect(() => {
